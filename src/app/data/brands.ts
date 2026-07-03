@@ -1,0 +1,143 @@
+export interface Brand {
+  id: string;
+  name: string;
+  category: string;
+  description: string;
+  code: string;
+  discount: string;
+  image: string;
+  logo?: string;
+  verified: boolean;
+  website?: string;
+}
+
+export const categories = [
+  'All',
+  'Food & Drinks',
+  'Accessories',
+  'Wellness',
+  'Kids & Baby',
+];
+
+export const brands: Brand[] = [
+  {
+    id: 'caramelly',
+    name: 'Caramelly',
+    category: 'Food & Drinks',
+    description: "Caramelly is India's leading destination for premium coffee capsules, specialty coffee, coffee machines, and brewing solutions, serving coffee enthusiasts, workplaces, cafés, hotels, and hospitality businesses.",
+    code: 'LATTE2K',
+    discount: 'Use code at checkout',
+    logo: 'https://caramelly.in/cdn/shop/files/logo-new_200x.png?v=1774079756',
+    image: 'https://caramelly.in/cdn/shop/files/logo-new_200x.png?v=1774079756',
+    verified: true,
+    website: 'https://caramelly.in/products/caramelly-latte-touch-coffee-machine-with-precision-grinding-and-touchscreen',
+  },
+  {
+    id: 'dhaaga-life',
+    name: 'Dhaaga Life',
+    category: 'Accessories',
+    description: 'Dhaaga Life is a handcrafted lifestyle brand creating beautifully embroidered bags and accessories, celebrating Indian craftsmanship while empowering women artisans.',
+    code: 'DLJULY20',
+    discount: 'Use code at checkout',
+    logo: 'https://dhaagalife.com/cdn/shop/files/Olive-Logo_website.png?v=1660290719',
+    image: 'https://dhaagalife.com/cdn/shop/files/Olive-Logo_website.png?v=1660290719',
+    verified: true,
+    website: 'https://dhaagalife.com',
+  },
+  {
+    id: 'nabhi-sutra',
+    name: 'Nabhi Sutra',
+    category: 'Wellness',
+    description: 'Reviving the forgotten rituals of Ayurveda for modern lifestyles — Nabhi Sutra & ADHYAY Wellness reintroduces timeless self-care rituals through thoughtfully crafted, authentic products.',
+    code: 'APS20',
+    discount: 'Save 20%',
+    logo: 'https://nabhisutra.com/cdn/shop/files/Nabhi_Sutra_Logo.png?v=1741155262',
+    image: 'https://nabhisutra.com/cdn/shop/files/Nabhi_Sutra_Logo.png?v=1741155262',
+    verified: true,
+    website: 'https://nabhisutra.com/pages/copper-stem-water-enhancer-a-gift-of-wellness',
+  },
+  {
+    id: 'nipura',
+    name: 'Nipura',
+    category: 'Accessories',
+    description: "Nipura's jewellery isn't just an adornment; it's a symbol of your confidence and self-worth.",
+    code: 'FIRSTSHOP10',
+    discount: 'Buy 2 Get 2 Free',
+    logo: 'https://nipura.in/cdn/shop/files/Nipura-logo-black.png?v=1719897472',
+    image: 'https://nipura.in/cdn/shop/files/Nipura-logo-black.png?v=1719897472',
+    verified: true,
+    website: 'https://nipura.in/collections/b2g2sale',
+  },
+  {
+    id: 'oregion',
+    name: 'Oregion',
+    category: 'Food & Drinks',
+    description: 'oRegion (Original Regional Foods) is a purpose-driven food brand bringing authentic, traceable, minimally processed foods — cold-pressed oils, A2 Gir cow ghee, natural honey and traditional sweeteners — from natural farmers and rural communities to your table.',
+    code: 'ORIGIN',
+    discount: '5% off for new customers',
+    logo: 'https://oregion.in/cdn/shop/files/oRegion---Logo.png?v=1705729092',
+    image: 'https://oregion.in/cdn/shop/files/oRegion---Logo.png?v=1705729092',
+    verified: true,
+    website: 'https://oregion.in/collections/bestseller-products',
+  },
+  {
+    id: 'urban-platter',
+    name: 'Urban Platter',
+    category: 'Food & Drinks',
+    description: 'Urban Platter is a curated marketplace for gourmet & specialty high-quality food ingredients sourced from across the world to enhance your everyday cooking.',
+    code: 'ANPHONIC',
+    discount: '5% off',
+    logo: 'https://urbanplatter.com/cdn/shop/files/UP_Logo_-_Text_without_shape_with_elephant_copy.png?v=1736433245',
+    image: 'https://urbanplatter.com/cdn/shop/files/UP_Logo_-_Text_without_shape_with_elephant_copy.png?v=1736433245',
+    verified: true,
+    website: 'https://urbanplatter.com/',
+  },
+  {
+    id: 'dhampur-green',
+    name: 'Dhampur Green',
+    category: 'Food & Drinks',
+    description: 'Dhampur Green crafts natural mocktail mixers and syrups for easy, flavorful drinks at home.',
+    code: 'MS10',
+    discount: 'Use code at checkout',
+    logo: 'https://www.dhampurgreen.com/cdn/shop/files/DG_logo_1_ded64305-ccce-454b-aadc-315240f82778.webp?v=1748675023',
+    image: 'https://www.dhampurgreen.com/cdn/shop/files/DG_logo_1_ded64305-ccce-454b-aadc-315240f82778.webp?v=1748675023',
+    verified: true,
+    website: 'https://www.dhampurgreen.com/collections/mocktails-syrups',
+  },
+  {
+    id: 'kekaa',
+    name: 'Kekaa',
+    category: 'Accessories',
+    description: 'Ultra-premium jewellery with class, confidence and lasting shine — the sound of your style.',
+    code: 'KEKAABOGO',
+    discount: 'Buy 1 Get 1 Free',
+    logo: 'https://www.kekaa.co/cdn/shop/files/Kekaa__Logo_C.svg?v=1745893109',
+    image: 'https://www.kekaa.co/cdn/shop/files/Kekaa__Logo_C.svg?v=1745893109',
+    verified: true,
+    website: 'https://www.kekaa.co/',
+  },
+  {
+    id: 'little-rituals',
+    name: 'Little Rituals',
+    category: 'Kids & Baby',
+    description: "Asia's only MADE SAFE®-certified baby care brand, free from 6,500+ harmful chemicals and toxins. Every formula transparently lists exact active-ingredient percentages and is clinically tested — real, science-backed care for your baby's skin.",
+    code: 'LRANPHONIC20',
+    discount: 'Use code at checkout',
+    logo: 'https://littlerituals.in/cdn/shop/files/Group_131.svg?v=1724387309',
+    image: 'https://littlerituals.in/cdn/shop/files/Group_131.svg?v=1724387309',
+    verified: true,
+    website: 'https://www.littlerituals.in/',
+  },
+  {
+    id: 'bubz',
+    name: 'Bubz',
+    category: 'Food & Drinks',
+    description: 'Bubz makes refreshing, better-for-you drinks — real ingredients, no shortcuts.',
+    code: 'BUBZZIN10',
+    discount: 'Use code at checkout',
+    logo: 'https://drinkbubz.com/cdn/shop/files/BUBZ_Logo_Final-01.png?v=1756269671',
+    image: 'https://drinkbubz.com/cdn/shop/files/BUBZ_Logo_Final-01.png?v=1756269671',
+    verified: true,
+    website: 'https://drinkbubz.com/',
+  },
+];
