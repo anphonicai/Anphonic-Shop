@@ -13,6 +13,7 @@ const leadValidation = [
   body('city').trim().notEmpty().withMessage('City is required').isLength({ max: 100 }),
   body('country').trim().notEmpty().withMessage('Country is required'),
   body('categories').isArray({ min: 1 }).withMessage('Select at least one category'),
+  body('consent').custom(value => value === true).withMessage('Consent is required to continue'),
 ];
 
 // POST /api/leads
@@ -24,7 +25,7 @@ router.post('/', leadValidation, async (req: Request, res: Response) => {
     return;
   }
 
-  const { name, email, phone, ageGroup, gender, city, country, categories } = req.body as {
+  const { name, email, phone, ageGroup, gender, city, country, categories, consent } = req.body as {
     name: string;
     email: string;
     phone: string;
@@ -33,13 +34,14 @@ router.post('/', leadValidation, async (req: Request, res: Response) => {
     city: string;
     country: string;
     categories: string[];
+    consent: boolean;
   };
 
   try {
     const lead = await prisma.lead.upsert({
       where: { email },
-      create: { name, email, phone, ageGroup, gender, city, country, categories },
-      update: { name, phone, ageGroup, gender, city, country, categories },
+      create: { name, email, phone, ageGroup, gender, city, country, categories, consent },
+      update: { name, phone, ageGroup, gender, city, country, categories, consent },
     });
 
     res.status(200).json({

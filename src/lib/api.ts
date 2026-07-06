@@ -20,6 +20,7 @@ export interface LeadPayload {
   city: string;
   country: string;
   categories: string[];
+  consent: boolean;
 }
 
 export interface LeadResponse {

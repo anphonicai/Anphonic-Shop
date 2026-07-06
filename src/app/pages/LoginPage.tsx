@@ -127,6 +127,7 @@ export function LoginPage() {
   const [city, setCity] = useState('');
   const [country, setCountry] = useState('');
   const [categories, setCategories] = useState<string[]>([]);
+  const [consent, setConsent] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState('');
@@ -144,7 +145,10 @@ export function LoginPage() {
       if (!city.trim()) e.city = 'Required';
       if (!country) e.country = 'Select one';
     }
-    if (step === 2 && categories.length === 0) e.categories = 'Select at least one';
+    if (step === 2) {
+      if (categories.length === 0) e.categories = 'Select at least one';
+      if (!consent) e.consent = 'Please accept to continue';
+    }
     setErrors(e);
     return Object.keys(e).length === 0;
   };
@@ -159,7 +163,7 @@ export function LoginPage() {
     setSubmitError('');
     try {
       const { lead } = await api.submitLead({
-        name, email, phone, ageGroup: age, gender, city, country, categories,
+        name, email, phone, ageGroup: age, gender, city, country, categories, consent,
       });
       localStorage.setItem(LEAD_SUBMITTED_KEY, '1');
       localStorage.setItem(USER_KEY, JSON.stringify({ name: lead.name, email: lead.email, categories: lead.categories }));
@@ -380,6 +384,20 @@ export function LoginPage() {
                     })}
                   </div>
                   {errors.categories && <p className="text-[11px]" style={{ color: '#e53e3e' }}>{errors.categories}</p>}
+
+                  <label className="flex items-start gap-2.5 pt-1 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={consent}
+                      onChange={e => setConsent(e.target.checked)}
+                      className="mt-0.5 w-4 h-4 shrink-0 rounded cursor-pointer accent-current"
+                      style={{ accentColor: TEAL }}
+                    />
+                    <span className="text-[11px] leading-relaxed" style={{ color: 'rgba(10,31,61,0.55)' }}>
+                      I agree to be contacted by Anphonic Shop via email, SMS or WhatsApp about offers and consent to my details being stored for this purpose. <span style={{ color: TEAL }}>*</span>
+                    </span>
+                  </label>
+                  {errors.consent && <p className="text-[11px]" style={{ color: '#e53e3e' }}>{errors.consent}</p>}
                 </div>
               )}
             </motion.div>

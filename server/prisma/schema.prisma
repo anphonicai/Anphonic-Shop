@@ -18,6 +18,7 @@ model Lead {
   city       String
   country    String
   categories String[]
+  consent    Boolean  @default(false)
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
