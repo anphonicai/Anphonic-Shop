@@ -4,13 +4,15 @@ import { prisma } from '../lib/prisma';
 
 const router = Router();
 
+const stripTags = (value: string) => value.replace(/<[^>]*>/g, '');
+
 const leadValidation = [
-  body('name').trim().notEmpty().withMessage('Name is required').isLength({ max: 100 }),
+  body('name').trim().customSanitizer(stripTags).notEmpty().withMessage('Name is required').isLength({ max: 100 }),
   body('email').trim().isEmail().withMessage('Valid email is required').normalizeEmail(),
   body('phone').trim().notEmpty().withMessage('Phone is required').isLength({ max: 20 }),
   body('ageGroup').trim().notEmpty().withMessage('Age group is required'),
   body('gender').trim().notEmpty().withMessage('Gender is required'),
-  body('city').trim().notEmpty().withMessage('City is required').isLength({ max: 100 }),
+  body('city').trim().customSanitizer(stripTags).notEmpty().withMessage('City is required').isLength({ max: 100 }),
   body('country').trim().notEmpty().withMessage('Country is required'),
   body('categories').isArray({ min: 1 }).withMessage('Select at least one category'),
   body('consent').custom(value => value === true).withMessage('Consent is required to continue'),
