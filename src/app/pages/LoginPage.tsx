@@ -394,7 +394,10 @@ export function LoginPage() {
                       style={{ accentColor: TEAL }}
                     />
                     <span className="text-[11px] leading-relaxed" style={{ color: 'rgba(10,31,61,0.55)' }}>
-                      I agree to be contacted by Anphonic Shop via email, SMS or WhatsApp about offers and consent to my details being stored for this purpose. <span style={{ color: TEAL }}>*</span>
+                      I agree to be contacted by Anphonic Shop via email, SMS or WhatsApp about offers and consent to my details being stored per the{' '}
+                      <a href="/privacy" target="_blank" rel="noopener noreferrer" style={{ color: TEAL, textDecoration: 'underline' }}>
+                        Privacy Policy
+                      </a>. <span style={{ color: TEAL }}>*</span>
                     </span>
                   </label>
                   {errors.consent && <p className="text-[11px]" style={{ color: '#e53e3e' }}>{errors.consent}</p>}

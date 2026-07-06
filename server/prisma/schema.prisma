@@ -24,3 +24,19 @@ model Lead {
 
   @@index([email])
 }
+
+model BrandSubmission {
+  id           String   @id @default(cuid())
+  brandName    String
+  website      String
+  contactName  String
+  contactEmail String
+  contactPhone String?
+  category     String
+  description  String
+  offerDetails String
+  status       String   @default("pending")
+  createdAt    DateTime @default(now())
+
+  @@index([contactEmail])
+}

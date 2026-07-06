@@ -4,6 +4,7 @@ import cors from 'cors';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import leadsRouter from './routes/leads';
+import brandSubmissionsRouter from './routes/brandSubmissions';
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -52,8 +53,18 @@ const leadsLimiter = rateLimit({
 
 app.use('/api/leads', leadsLimiter);
 
+// Tighter rate limit on brand submissions: 5 per 15 minutes per IP
+const brandSubmissionsLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 5,
+  message: { error: 'Too many attempts, please try again later.' },
+});
+
+app.use('/api/brand-submissions', brandSubmissionsLimiter);
+
 // Routes
 app.use('/api/leads', leadsRouter);
+app.use('/api/brand-submissions', brandSubmissionsRouter);
 
 // Health check
 app.get('/health', (_req, res) => {

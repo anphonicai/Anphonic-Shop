@@ -1,3 +1,4 @@
+import { Link } from 'react-router';
 import { cn } from './utils';
 import { AnphonicLogo } from '../AnphonicLogo';
 import { brands, categories } from '../../data/brands';
@@ -33,21 +34,23 @@ const tapeRight = (
 );
 
 const NAV_INDEX = [
-  { label: 'All Brands', id: 'index' },
-  ...categories.filter(c => c !== 'All').map(label => ({ label, id: 'index' })),
+  { label: 'All Brands', to: '/brands' },
+  ...categories.filter(c => c !== 'All').map(label => ({ label, to: '/brands' })),
 ];
 
 const NAV_ANPHONIC = [
-  { label: 'About', id: 'about' },
-  { label: 'How It Works', id: 'about' },
-  { label: 'Submit a Brand', id: 'about' },
-  { label: 'Contact', id: 'about' },
-  { label: 'Privacy', id: 'about' },
+  { label: 'About', to: '/about' },
+  { label: 'How It Works', to: '/how-it-works' },
+  { label: 'Submit a Brand', to: '/submit-a-brand' },
+  { label: 'Contact', to: '/contact' },
+  { label: 'Privacy', to: '/privacy' },
 ];
 
-function scrollTo(id: string) {
-  document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
-}
+const BOTTOM_LINKS = [
+  { label: 'Privacy Policy', to: '/privacy' },
+  { label: 'Terms & Conditions', to: '/terms' },
+  { label: 'Submit a Brand', to: '/submit-a-brand' },
+];
 
 export function TapedFooter({ className }: { className?: string }) {
   const now = new Date();
@@ -86,9 +89,9 @@ export function TapedFooter({ className }: { className?: string }) {
 
           {/* Brand column */}
           <div className="flex flex-col items-start gap-3 w-full md:max-w-xs">
-            <button onClick={() => scrollTo('index')} className="focus:outline-none">
+            <Link to="/brands" className="focus:outline-none">
               <AnphonicLogo className="h-9 w-auto" />
-            </button>
+            </Link>
             <p className="text-sm leading-relaxed" style={{ color: MUTED }}>
               A curated index of independent D2C brands — verified codes, zero noise. Updated every week.
             </p>
@@ -103,13 +106,13 @@ export function TapedFooter({ className }: { className?: string }) {
               </span>
             </div>
             {/* Browse Codes CTA — mobile only, sits right below the badge */}
-            <button
-              onClick={() => scrollTo('index')}
+            <Link
+              to="/brands"
               className="mt-1 md:hidden inline-flex items-center gap-2 text-xs uppercase tracking-widest text-white px-5 py-2.5 rounded-full transition-all duration-200 hover:opacity-90"
               style={{ backgroundColor: TEAL }}
             >
               Browse codes →
-            </button>
+            </Link>
           </div>
 
           {/* Nav columns — always side-by-side grid on mobile, row on desktop */}
@@ -126,15 +129,15 @@ export function TapedFooter({ className }: { className?: string }) {
               <ul className="flex flex-col gap-2">
                 {NAV_INDEX.map((link) => (
                   <li key={link.label}>
-                    <button
-                      onClick={() => scrollTo(link.id)}
+                    <Link
+                      to={link.to}
                       className="text-sm font-light text-left transition-colors duration-150"
                       style={{ color: MUTED }}
                       onMouseEnter={e => (e.currentTarget.style.color = NAVY)}
                       onMouseLeave={e => (e.currentTarget.style.color = MUTED)}
                     >
                       {link.label}
-                    </button>
+                    </Link>
                   </li>
                 ))}
               </ul>
@@ -151,15 +154,15 @@ export function TapedFooter({ className }: { className?: string }) {
               <ul className="flex flex-col gap-2">
                 {NAV_ANPHONIC.map((link) => (
                   <li key={link.label}>
-                    <button
-                      onClick={() => scrollTo(link.id)}
+                    <Link
+                      to={link.to}
                       className="text-sm font-light text-left transition-colors duration-150 whitespace-nowrap"
                       style={{ color: MUTED }}
                       onMouseEnter={e => (e.currentTarget.style.color = NAVY)}
                       onMouseLeave={e => (e.currentTarget.style.color = MUTED)}
                     >
                       {link.label}
-                    </button>
+                    </Link>
                   </li>
                 ))}
               </ul>
@@ -167,13 +170,13 @@ export function TapedFooter({ className }: { className?: string }) {
 
             {/* Browse Codes CTA — desktop only */}
             <div className="hidden lg:flex flex-col gap-3 justify-start pt-5">
-              <button
-                onClick={() => scrollTo('index')}
+              <Link
+                to="/brands"
                 className="inline-flex items-center gap-2 text-xs uppercase tracking-widest text-white px-6 py-3 rounded-full transition-all duration-200 hover:opacity-90 whitespace-nowrap"
                 style={{ backgroundColor: TEAL }}
               >
                 Browse codes →
-              </button>
+              </Link>
               <p className="text-[10px] uppercase tracking-wider" style={{ color: MUTED }}>
                 {brands.length} brands · {categories.length - 1} categories
               </p>
@@ -195,21 +198,17 @@ export function TapedFooter({ className }: { className?: string }) {
 
         {/* Links — wrap on mobile, single row on desktop */}
         <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
-          {[
-            { label: 'Privacy Policy', id: 'about' },
-            { label: 'Terms & Conditions', id: 'about' },
-            { label: 'Submit a Brand', id: 'about' },
-          ].map((item) => (
-            <button
+          {BOTTOM_LINKS.map((item) => (
+            <Link
               key={item.label}
-              onClick={() => scrollTo(item.id)}
+              to={item.to}
               className="text-[11px] md:text-sm font-light hover:underline underline-offset-2 transition-colors"
               style={{ color: MUTED, fontFamily: 'inherit' }}
               onMouseEnter={e => (e.currentTarget.style.color = NAVY)}
               onMouseLeave={e => (e.currentTarget.style.color = MUTED)}
             >
               {item.label}
-            </button>
+            </Link>
           ))}
         </div>
       </div>
