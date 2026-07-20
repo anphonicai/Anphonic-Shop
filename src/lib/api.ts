@@ -32,7 +32,7 @@ export interface BrandSubmissionPayload {
   website: string;
   contactName: string;
   contactEmail: string;
-  contactPhone?: string;
+  contactPhone: string;
   category: string;
   description: string;
   offerDetails: string;

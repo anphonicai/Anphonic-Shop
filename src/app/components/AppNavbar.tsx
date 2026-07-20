@@ -1,17 +1,15 @@
 import { useState, useEffect } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 import { motion } from 'motion/react';
-import { LogOut, LayoutGrid, Tag } from 'lucide-react';
+import { LogOut } from 'lucide-react';
 import { AnphonicLogo } from './AnphonicLogo';
 import { LEAD_SUBMITTED_KEY } from '../../lib/leadGate';
 
 const NAVY = '#0a1f3d';
-const TEAL = '#009689';
 const USER_KEY = 'anphonic_user';
 
 export function AppNavbar() {
   const navigate = useNavigate();
-  const location = useLocation();
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [firstName, setFirstName] = useState('');
@@ -43,13 +41,6 @@ export function AppNavbar() {
     navigate('/');
   };
 
-  const NAV_LINKS = [
-    { label: 'Browse Index', to: '/brands', icon: LayoutGrid },
-    { label: 'Categories', to: '/brands?filter=all', icon: Tag },
-  ];
-
-  const isActive = (to: string) => location.pathname === to.split('?')[0];
-
   return (
     <motion.header
       initial={{ opacity: 0, y: -12 }}
@@ -65,26 +56,6 @@ export function AppNavbar() {
         <Link to="/brands" className="flex items-center gap-3">
           <AnphonicLogo className="h-9 w-auto" />
         </Link>
-
-        {/* Desktop nav */}
-        <nav className="hidden md:flex items-center gap-1">
-          {NAV_LINKS.map(link => (
-            <Link
-              key={link.label}
-              to={link.to}
-              className="flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-medium uppercase tracking-widest transition-all duration-200"
-              style={{
-                color: isActive(link.to) ? NAVY : '#5a7a9a',
-                backgroundColor: isActive(link.to) ? 'rgba(10,31,61,0.06)' : 'transparent',
-              }}
-              onMouseEnter={e => { if (!isActive(link.to)) (e.currentTarget as HTMLElement).style.color = NAVY; }}
-              onMouseLeave={e => { if (!isActive(link.to)) (e.currentTarget as HTMLElement).style.color = '#5a7a9a'; }}
-            >
-              <link.icon className="size-3.5" />
-              {link.label}
-            </Link>
-          ))}
-        </nav>
 
         {/* Right side */}
         <div className="hidden md:flex items-center gap-4">
@@ -137,20 +108,6 @@ export function AppNavbar() {
         aria-hidden={!menuOpen}
       >
         <nav className="flex flex-col px-6 py-4 gap-1">
-          {NAV_LINKS.map(link => (
-            <Link
-              key={link.label}
-              to={link.to}
-              onClick={() => setMenuOpen(false)}
-              tabIndex={menuOpen ? 0 : -1}
-              className="flex items-center gap-2 text-sm font-medium py-3 tracking-wide"
-              style={{ color: NAVY }}
-            >
-              <link.icon className="size-4" style={{ color: TEAL }} />
-              {link.label}
-            </Link>
-          ))}
-          <div className="border-t my-2" style={{ borderColor: 'rgba(10,31,61,0.07)' }} />
           {firstName && (
             <p className="text-xs py-1 mb-1" style={{ color: '#5a7a9a' }}>
               Signed in as <strong style={{ color: NAVY }}>{firstName}</strong>

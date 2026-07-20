@@ -9,6 +9,11 @@ import brandSubmissionsRouter from './routes/brandSubmissions';
 const app = express();
 const PORT = process.env.PORT || 3001;
 
+// Trust exactly one upstream hop (Cloud Run's proxy) so req.ip reflects the
+// real visitor IP from X-Forwarded-For, not Cloud Run's internal address —
+// required for express-rate-limit to key off real clients instead of one shared bucket.
+app.set('trust proxy', 1);
+
 // Security headers
 app.use(helmet());
 

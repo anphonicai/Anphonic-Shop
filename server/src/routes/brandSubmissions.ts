@@ -8,10 +8,10 @@ const stripTags = (value: string) => value.replace(/<[^>]*>/g, '');
 
 const submissionValidation = [
   body('brandName').trim().customSanitizer(stripTags).notEmpty().withMessage('Brand name is required').isLength({ max: 100 }),
-  body('website').trim().isURL().withMessage('A valid website URL is required').isLength({ max: 200 }),
+  body('website').trim().customSanitizer(stripTags).notEmpty().withMessage('Website is required').isLength({ max: 200 }),
   body('contactName').trim().customSanitizer(stripTags).notEmpty().withMessage('Contact name is required').isLength({ max: 100 }),
   body('contactEmail').trim().isEmail().withMessage('Valid email is required').normalizeEmail(),
-  body('contactPhone').optional({ values: 'falsy' }).trim().isLength({ max: 20 }),
+  body('contactPhone').trim().notEmpty().withMessage('Phone number is required').isLength({ max: 20 }),
   body('category').trim().notEmpty().withMessage('Category is required'),
   body('description').trim().customSanitizer(stripTags).notEmpty().withMessage('Description is required').isLength({ max: 2000 }),
   body('offerDetails').trim().customSanitizer(stripTags).notEmpty().withMessage('Offer details are required').isLength({ max: 1000 }),
@@ -31,7 +31,7 @@ router.post('/', submissionValidation, async (req: Request, res: Response) => {
     website: string;
     contactName: string;
     contactEmail: string;
-    contactPhone?: string;
+    contactPhone: string;
     category: string;
     description: string;
     offerDetails: string;

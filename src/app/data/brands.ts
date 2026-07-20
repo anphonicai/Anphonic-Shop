@@ -17,6 +17,7 @@ export const categories = [
   'Accessories',
   'Wellness',
   'Kids & Baby',
+  'Fashion',
 ];
 
 export const brands: Brand[] = [
@@ -26,7 +27,7 @@ export const brands: Brand[] = [
     category: 'Food & Drinks',
     description: "Caramelly is India's leading destination for premium coffee capsules, specialty coffee, coffee machines, and brewing solutions, serving coffee enthusiasts, workplaces, cafés, hotels, and hospitality businesses.",
     code: 'LATTE2K',
-    discount: 'Use code at checkout',
+    discount: 'Use code at checkout — valid only on the Latte Touch Coffee Machine',
     logo: 'https://caramelly.in/cdn/shop/files/logo-new_200x.png?v=1774079756',
     image: 'https://caramelly.in/cdn/shop/files/logo-new_200x.png?v=1774079756',
     verified: true,
@@ -139,5 +140,17 @@ export const brands: Brand[] = [
     image: 'https://drinkbubz.com/cdn/shop/files/BUBZ_Logo_Final-01.png?v=1756269671',
     verified: true,
     website: 'https://drinkbubz.com/',
+  },
+  {
+    id: 'keos',
+    name: 'Keos',
+    category: 'Fashion',
+    description: 'Keos is a modern Indian clothing brand creating everyday essentials with premium comfort, sharp design, and effortless personality.',
+    code: 'KEOSFLASH20',
+    discount: 'Use code at checkout — valid until 30th September 2026',
+    logo: 'https://keos.life/cdn/shop/files/KEOS_LION_2025_-_BROWN_4af73177-8d4a-49bb-95ad-89230fd40338.png?v=1768638102',
+    image: 'https://keos.life/cdn/shop/files/KEOS_LION_2025_-_BROWN_4af73177-8d4a-49bb-95ad-89230fd40338.png?v=1768638102',
+    verified: true,
+    website: 'https://keos.life/collections/new-arrivals',
   },
 ];

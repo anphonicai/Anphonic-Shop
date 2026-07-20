@@ -124,7 +124,15 @@ function BrandCard({ brand, index }: { brand: typeof brands[0]; index: number })
 }
 
 export function BrandsPage() {
-  const [activeCategory, setActiveCategory] = useState('All');
+  const [activeCategory, setActiveCategory] = useState(() => {
+    try {
+      const raw = localStorage.getItem(USER_KEY);
+      const interests = raw ? (JSON.parse(raw).categories as string[] | undefined) : undefined;
+      return interests?.find(c => ALL_CATS.includes(c)) ?? 'All';
+    } catch {
+      return 'All';
+    }
+  });
   const [firstName, setFirstName] = useState('');
 
   useEffect(() => {

@@ -11,6 +11,21 @@ const NAVY = '#0a1f3d';
 const TEAL = '#14b8a6';
 const CREAM = '#F5F3EF';
 const USER_KEY = 'anphonic_user';
+const REMEMBERED_FORM_KEY = 'anphonic_remembered_form';
+
+interface RememberedForm {
+  name: string; email: string; phone: string; age: string; gender: string;
+  city: string; country: string; categories: string[];
+}
+
+function loadRememberedForm(): Partial<RememberedForm> {
+  try {
+    const raw = localStorage.getItem(REMEMBERED_FORM_KEY);
+    return raw ? JSON.parse(raw) : {};
+  } catch {
+    return {};
+  }
+}
 
 const CATEGORIES = [
   { id: 'Skincare', label: 'Skincare', emoji: '✨' },
@@ -31,11 +46,11 @@ const COUNTRIES = ['India', 'United Kingdom', 'United States', 'Australia', 'Can
 const STEPS = ['Details', 'Location', 'Interests'];
 
 function FieldInput({
-  label, type = 'text', value, onChange, placeholder, error, required,
+  label, type = 'text', value, onChange, placeholder, error, required, autoComplete,
 }: {
   label: string; type?: string; value: string;
   onChange: (v: string) => void; placeholder?: string;
-  error?: string; required?: boolean;
+  error?: string; required?: boolean; autoComplete?: string;
 }) {
   const [focused, setFocused] = useState(false);
   return (
@@ -51,6 +66,7 @@ function FieldInput({
         value={value}
         onChange={e => onChange(e.target.value)}
         placeholder={placeholder}
+        autoComplete={autoComplete}
         onFocus={() => setFocused(true)}
         onBlur={() => setFocused(false)}
         className="w-full px-3.5 py-2.5 text-sm outline-none transition-all duration-200 rounded-lg"
@@ -119,14 +135,15 @@ export function LoginPage() {
   }, []);
 
   const [step, setStep] = useState(0);
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [phone, setPhone] = useState('');
-  const [age, setAge] = useState('');
-  const [gender, setGender] = useState('');
-  const [city, setCity] = useState('');
-  const [country, setCountry] = useState('');
-  const [categories, setCategories] = useState<string[]>([]);
+  const [name, setName] = useState(() => loadRememberedForm().name ?? '');
+  const [email, setEmail] = useState(() => loadRememberedForm().email ?? '');
+  const [phone, setPhone] = useState(() => loadRememberedForm().phone ?? '');
+  const [age, setAge] = useState(() => loadRememberedForm().age ?? '');
+  const [gender, setGender] = useState(() => loadRememberedForm().gender ?? '');
+  const [city, setCity] = useState(() => loadRememberedForm().city ?? '');
+  const [country, setCountry] = useState(() => loadRememberedForm().country ?? '');
+  const [categories, setCategories] = useState<string[]>(() => loadRememberedForm().categories ?? []);
+  // Consent is never remembered — re-confirming it each visit is a deliberate choice, not an oversight.
   const [consent, setConsent] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitting, setSubmitting] = useState(false);
@@ -167,6 +184,9 @@ export function LoginPage() {
       });
       localStorage.setItem(LEAD_SUBMITTED_KEY, '1');
       localStorage.setItem(USER_KEY, JSON.stringify({ name: lead.name, email: lead.email, categories: lead.categories }));
+      // Remembered separately from USER_KEY so it survives sign-out — next time the gate
+      // shows up, the form starts pre-filled instead of blank.
+      localStorage.setItem(REMEMBERED_FORM_KEY, JSON.stringify({ name, email, phone, age, gender, city, country, categories }));
       navigate('/brands');
     } catch (err) {
       setSubmitError(err instanceof Error ? err.message : 'Something went wrong. Please try again.');
@@ -284,9 +304,9 @@ export function LoginPage() {
             >
               {step === 0 && (
                 <div className="space-y-3">
-                  <FieldInput label="Full Name" value={name} onChange={setName} placeholder="Alex Johnson" error={errors.name} required />
-                  <FieldInput label="Email Address" type="email" value={email} onChange={setEmail} placeholder="alex@example.com" error={errors.email} required />
-                  <FieldInput label="Phone Number" type="tel" value={phone} onChange={setPhone} placeholder="+91 98765 43210" error={errors.phone} required />
+                  <FieldInput label="Full Name" value={name} onChange={setName} placeholder="Alex Johnson" error={errors.name} required autoComplete="name" />
+                  <FieldInput label="Email Address" type="email" value={email} onChange={setEmail} placeholder="alex@example.com" error={errors.email} required autoComplete="email" />
+                  <FieldInput label="Phone Number" type="tel" value={phone} onChange={setPhone} placeholder="+91 98765 43210" error={errors.phone} required autoComplete="tel" />
                 </div>
               )}
 
@@ -295,7 +315,7 @@ export function LoginPage() {
                   <PillGroup label="Age Group *" options={AGE_SEGMENTS} value={age} onChange={setAge} error={errors.age} />
                   <PillGroup label="Gender *" options={GENDERS} value={gender} onChange={setGender} error={errors.gender} />
                   <div className="grid grid-cols-2 gap-3">
-                    <FieldInput label="City" value={city} onChange={setCity} placeholder="Mumbai" error={errors.city} required />
+                    <FieldInput label="City" value={city} onChange={setCity} placeholder="Mumbai" error={errors.city} required autoComplete="address-level2" />
                     <div>
                       <label
                         className="block text-[10px] uppercase tracking-[0.18em] font-semibold mb-1.5"
@@ -306,6 +326,7 @@ export function LoginPage() {
                       <select
                         value={country}
                         onChange={e => setCountry(e.target.value)}
+                        autoComplete="country-name"
                         className="w-full px-3.5 py-2.5 rounded-lg text-sm outline-none transition-all duration-200"
                         style={{
                           border: `1.5px solid ${errors.country ? '#e53e3e' : 'rgba(10,31,61,0.12)'}`,

@@ -79,9 +79,10 @@ export function SubmitBrandPage() {
   const validate = (): boolean => {
     const e: Record<string, string> = {};
     if (!brandName.trim()) e.brandName = 'Required';
-    if (!website.trim() || !/^https?:\/\/.+\..+/.test(website.trim())) e.website = 'Enter a full URL, e.g. https://yourbrand.com';
+    if (!website.trim()) e.website = 'Required';
     if (!contactName.trim()) e.contactName = 'Required';
     if (!contactEmail.trim() || !/\S+@\S+\.\S+/.test(contactEmail)) e.contactEmail = 'Valid email required';
+    if (!contactPhone.trim()) e.contactPhone = 'Required';
     if (!category) e.category = 'Select a category';
     if (!description.trim()) e.description = 'Required';
     if (!offerDetails.trim()) e.offerDetails = 'Required';
@@ -96,7 +97,7 @@ export function SubmitBrandPage() {
     try {
       await api.submitBrand({
         brandName, website, contactName, contactEmail,
-        contactPhone: contactPhone.trim() || undefined,
+        contactPhone: contactPhone.trim(),
         category, description, offerDetails,
       });
       setDone(true);
@@ -139,14 +140,14 @@ export function SubmitBrandPage() {
       >
         <div className="grid sm:grid-cols-2 gap-5">
           <Field label="Brand Name" id="brandName" value={brandName} onChange={setBrandName} placeholder="Caramelly" error={errors.brandName} required />
-          <Field label="Website" id="website" value={website} onChange={setWebsite} placeholder="https://yourbrand.com" error={errors.website} required />
+          <Field label="Website" id="website" value={website} onChange={setWebsite} placeholder="https://yourbrand.com or your brand name" error={errors.website} required />
         </div>
         <div className="grid sm:grid-cols-2 gap-5">
           <Field label="Contact Name" id="contactName" value={contactName} onChange={setContactName} placeholder="Your name" error={errors.contactName} required />
           <Field label="Contact Email" id="contactEmail" type="email" value={contactEmail} onChange={setContactEmail} placeholder="you@yourbrand.com" error={errors.contactEmail} required />
         </div>
         <div className="grid sm:grid-cols-2 gap-5">
-          <Field label="Contact Phone" id="contactPhone" type="tel" value={contactPhone} onChange={setContactPhone} placeholder="+91 98765 43210 (optional)" />
+          <Field label="Contact Phone" id="contactPhone" type="tel" value={contactPhone} onChange={setContactPhone} placeholder="+91 98765 43210" error={errors.contactPhone} required />
           <div>
             <label htmlFor="category" className="block text-xs uppercase tracking-wider font-medium mb-2" style={{ color: NAVY }}>
               Category<span style={{ color: TEAL }}>*</span>
