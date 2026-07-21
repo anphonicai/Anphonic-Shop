@@ -42,6 +42,8 @@ export interface BrandSubmissionResponse {
   submission: { id: string; brandName: string };
 }
 
+export const trackClickUrl = (brandId: string) => `${BASE_URL}/api/track/click?bid=${brandId}`;
+
 export const api = {
   submitLead(payload: LeadPayload): Promise<LeadResponse> {
     return request<LeadResponse>('/api/leads', {

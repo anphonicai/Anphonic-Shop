@@ -5,6 +5,7 @@ import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import leadsRouter from './routes/leads';
 import brandSubmissionsRouter from './routes/brandSubmissions';
+import trackingRouter from './routes/tracking';
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -70,6 +71,7 @@ app.use('/api/brand-submissions', brandSubmissionsLimiter);
 // Routes
 app.use('/api/leads', leadsRouter);
 app.use('/api/brand-submissions', brandSubmissionsRouter);
+app.use('/api/track', trackingRouter);
 
 // Health check
 app.get('/health', (_req, res) => {

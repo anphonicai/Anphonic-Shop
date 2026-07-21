@@ -5,6 +5,7 @@ import { ArrowLeft, Copy, Check, ExternalLink, Lock, Sparkles, CheckCircle2, Shi
 import { brands } from '../data/brands';
 import { AppNavbar } from '../components/AppNavbar';
 import { ImageWithFallback } from '../components/figma/ImageWithFallback';
+import { trackClickUrl } from '../../lib/api';
 
 const NAVY = '#0a1f3d';
 const TEAL = '#009689';
@@ -232,7 +233,7 @@ function OfferRevealCard({ brand }: { brand: typeof brands[0] }) {
 
                 {/* Visit brand */}
                 <a
-                  href={brand.website ?? '#'}
+                  href={brand.website ? trackClickUrl(brand.id) : '#'}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center justify-center gap-2 w-full py-3 rounded-xl text-xs font-semibold uppercase tracking-widest transition-all duration-200"
@@ -367,7 +368,7 @@ export function BrandPage() {
                   </span>
                   {/* Mobile only: Visit Website replaces the Verified Partner badge here */}
                   <a
-                    href={brand.website ?? '#'}
+                    href={brand.website ? trackClickUrl(brand.id) : '#'}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex lg:hidden items-center gap-1.5 px-3 py-1 rounded-full text-[10px] uppercase tracking-wider font-semibold transition-colors duration-200"
@@ -441,7 +442,7 @@ export function BrandPage() {
                       About this brand
                     </p>
                     <a
-                      href={brand.website ?? '#'}
+                      href={brand.website ? trackClickUrl(brand.id) : '#'}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="inline-flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-widest px-4 py-2 rounded-full transition-all duration-200"

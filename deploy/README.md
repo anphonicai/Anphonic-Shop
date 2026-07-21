@@ -13,13 +13,19 @@ Two steps are required for a change to reach production:
 Run step 2 with:
 
 ```bash
-./deploy/deploy-frontend.sh
+./deploy/deploy-frontend.sh   # frontend (anphonic.shop)
+./deploy/deploy-backend.sh    # backend/API (anphonicshop-api)
 ```
 
-This builds the frontend image via Cloud Build (with the same `VITE_API_URL`
-build arg used in production), pushes it to Artifact Registry, and deploys it
-as a new revision of the `anphonicshop-web` Cloud Run service in `asia-east1`
-(the region mapped to `anphonic.shop` / `www.anphonic.shop`).
+`deploy-frontend.sh` builds the frontend image via Cloud Build (with the same
+`VITE_API_URL` build arg used in production), pushes it to Artifact Registry,
+and deploys it as a new revision of the `anphonicshop-web` Cloud Run service
+in `asia-east1` (the region mapped to `anphonic.shop` / `www.anphonic.shop`).
+
+`deploy-backend.sh` builds the `server/` image via Cloud Build, pushes it to
+Artifact Registry, and deploys it as a new revision of the `anphonicshop-api`
+Cloud Run service in `asia-south1`. Run this one whenever `server/` changes
+(new routes, schema changes, etc.) — the frontend script does not touch it.
 
 ## Current infra (as of 2026-07-20)
 
