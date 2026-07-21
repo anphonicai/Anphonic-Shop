@@ -22,6 +22,7 @@ COPY package.json package-lock.json* ./
 RUN npm ci
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/src/app/data/brands.ts ./src/app/data/brands.ts
+COPY --from=builder /app/src/app/data/blogs.ts ./src/app/data/blogs.ts
 COPY --from=builder /app/src/lib/leadGate.ts ./src/lib/leadGate.ts
 COPY scripts/prerender.mjs ./scripts/prerender.mjs
 RUN node scripts/prerender.mjs
