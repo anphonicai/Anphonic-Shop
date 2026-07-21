@@ -47,6 +47,7 @@ const NAV_ANPHONIC = [
 ];
 
 const BOTTOM_LINKS = [
+  { label: 'Blog', to: '/blogs' },
   { label: 'Privacy Policy', to: '/privacy' },
   { label: 'Terms & Conditions', to: '/terms' },
   { label: 'Submit a Brand', to: '/submit-a-brand' },

@@ -9,6 +9,8 @@ import { SubmitBrandPage } from './app/pages/SubmitBrandPage';
 import { ContactPage } from './app/pages/ContactPage';
 import { PrivacyPage } from './app/pages/PrivacyPage';
 import { TermsPage } from './app/pages/TermsPage';
+import { BlogsPage } from './app/pages/BlogsPage';
+import { BlogPostPage } from './app/pages/BlogPostPage';
 import { LEAD_SUBMITTED_KEY } from './lib/leadGate';
 import './styles/index.css';
 
@@ -41,6 +43,8 @@ const router = createBrowserRouter([
     ),
   },
   { path: '/offers', element: <Navigate to="/brands" replace /> },
+  { path: '/blogs', element: <BlogsPage /> },
+  { path: '/blogs/:slug', element: <BlogPostPage /> },
   { path: '/about', element: <AboutPage /> },
   { path: '/how-it-works', element: <HowItWorksPage /> },
   { path: '/submit-a-brand', element: <SubmitBrandPage /> },

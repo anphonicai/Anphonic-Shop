@@ -26,6 +26,8 @@ const STATIC_ROUTES = [
   '/terms',
 ];
 
+const BLOG_INDEX_ROUTE = '/blogs';
+
 async function compileToModule(relSourcePath, tmpName) {
   const entry = path.join(ROOT, relSourcePath);
   const result = await esbuildBuild({
@@ -45,12 +47,14 @@ function routeToFilePath(route) {
   return path.join(DIST, '_prerendered', `${clean}.html`);
 }
 
-async function writeSitemap(brandIds) {
+async function writeSitemap(brandIds, blogSlugs) {
   const routes = [
     '/',
     '/brands',
     ...STATIC_ROUTES,
+    BLOG_INDEX_ROUTE,
     ...brandIds.map(id => `/brand/${id}`),
+    ...blogSlugs.map(slug => `/blogs/${slug}`),
   ];
   const urls = routes
     .map(route => `  <url><loc>${SITE_URL}${route}</loc></url>`)
@@ -83,9 +87,10 @@ async function main() {
   await mkdir(TMP, { recursive: true });
 
   const { brands } = await compileToModule('src/app/data/brands.ts', 'brands.mjs');
+  const { blogPosts } = await compileToModule('src/app/data/blogs.ts', 'blogs.mjs');
   const { LEAD_SUBMITTED_KEY } = await compileToModule('src/lib/leadGate.ts', 'leadGate.mjs');
 
-  await writeSitemap(brands.map(b => b.id));
+  await writeSitemap(brands.map(b => b.id), blogPosts.map(p => p.slug));
 
   const previewServer = spawn(
     'npx',
@@ -107,11 +112,32 @@ async function main() {
       [LEAD_SUBMITTED_KEY]
     );
 
-    const snapshot = async (route, { brand } = {}) => {
+    const snapshot = async (route, { brand, post } = {}) => {
       const page = await context.newPage();
       try {
         await page.goto(`${baseUrl}${route}`, { waitUntil: 'networkidle', timeout: 20000 });
         await page.waitForTimeout(400);
+
+        if (post) {
+          const url = `${SITE_URL}/blogs/${post.slug}`;
+          await page.evaluate(
+            ({ seoTitle, metaDescription, url }) => {
+              document.title = `${seoTitle} | Anphonic Shop`;
+              const setMeta = (sel, attr, val) => {
+                const el = document.querySelector(sel);
+                if (el) el.setAttribute(attr, val);
+              };
+              setMeta('meta[name="description"]', 'content', metaDescription);
+              setMeta('link[rel="canonical"]', 'href', url);
+              setMeta('meta[property="og:title"]', 'content', seoTitle);
+              setMeta('meta[property="og:description"]', 'content', metaDescription);
+              setMeta('meta[property="og:url"]', 'content', url);
+              setMeta('meta[name="twitter:title"]', 'content', seoTitle);
+              setMeta('meta[name="twitter:description"]', 'content', metaDescription);
+            },
+            { seoTitle: post.seoTitle, metaDescription: post.metaDescription, url }
+          );
+        }
 
         if (brand) {
           const url = `${SITE_URL}/brand/${brand.id}`;
@@ -148,6 +174,7 @@ async function main() {
     // Required routes — a failure here fails the whole build.
     await snapshot('/');
     await snapshot('/brands');
+    await snapshot(BLOG_INDEX_ROUTE);
     for (const route of STATIC_ROUTES) {
       await snapshot(route);
     }
@@ -158,6 +185,19 @@ async function main() {
       const route = `/brand/${brand.id}`;
       try {
         await snapshot(route, { brand });
+      } catch (err) {
+        console.warn(`[prerender] snapshot failed for ${route}, falling back to shell:`, err.message);
+        const outPath = routeToFilePath(route);
+        await mkdir(path.dirname(outPath), { recursive: true });
+        await writeFile(outPath, fallbackHtml);
+      }
+    }
+
+    // Per-post routes — same fallback behavior as brand routes.
+    for (const post of blogPosts) {
+      const route = `/blogs/${post.slug}`;
+      try {
+        await snapshot(route, { post });
       } catch (err) {
         console.warn(`[prerender] snapshot failed for ${route}, falling back to shell:`, err.message);
         const outPath = routeToFilePath(route);
