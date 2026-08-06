@@ -96,36 +96,32 @@ router.get('/conversion', async (req: Request, res: Response) => {
 });
 
 // GET /api/track/stats
-// Click and conversion counts per brand, for the internal stats page. Requires
-// the x-admin-key header — see requireAdminKey above.
+// Total and this-month click counts per brand, for the internal stats page.
+// Requires the x-admin-key header — see requireAdminKey above.
 router.get('/stats', requireAdminKey, async (_req: Request, res: Response) => {
   try {
-    const [clicks, conversions] = await Promise.all([
+    const monthStart = new Date();
+    monthStart.setUTCDate(1);
+    monthStart.setUTCHours(0, 0, 0, 0);
+
+    const [totalClicks, monthlyClicks] = await Promise.all([
       prisma.click.groupBy({ by: ['brandId'], _count: { _all: true } }),
-      prisma.conversion.groupBy({ by: ['brandId'], _count: { _all: true }, _sum: { orderTotal: true } }),
+      prisma.click.groupBy({ by: ['brandId'], _count: { _all: true }, where: { createdAt: { gte: monthStart } } }),
     ]);
 
-    const clicksByBrand = new Map(clicks.map(c => [c.brandId, c._count._all]));
-    const conversionsByBrand = new Map(
-      conversions.map(c => [c.brandId, { count: c._count._all, revenue: c._sum.orderTotal?.toNumber() ?? 0 }])
-    );
+    const totalByBrand = new Map(totalClicks.map(c => [c.brandId, c._count._all]));
+    const monthlyByBrand = new Map(monthlyClicks.map(c => [c.brandId, c._count._all]));
 
-    const brandIds = new Set([...Object.keys(brandRegistry), ...clicksByBrand.keys(), ...conversionsByBrand.keys()]);
+    const brandIds = new Set([...Object.keys(brandRegistry), ...totalByBrand.keys()]);
 
-    const stats = [...brandIds].map(brandId => {
-      const clickCount = clicksByBrand.get(brandId) ?? 0;
-      const conversion = conversionsByBrand.get(brandId) ?? { count: 0, revenue: 0 };
-      return {
-        brandId,
-        website: brandRegistry[brandId]?.website ?? null,
-        clicks: clickCount,
-        conversions: conversion.count,
-        conversionRate: clickCount > 0 ? conversion.count / clickCount : 0,
-        revenue: conversion.revenue,
-      };
-    });
+    const stats = [...brandIds].map(brandId => ({
+      brandId,
+      website: brandRegistry[brandId]?.website ?? null,
+      totalClicks: totalByBrand.get(brandId) ?? 0,
+      monthlyClicks: monthlyByBrand.get(brandId) ?? 0,
+    }));
 
-    stats.sort((a, b) => b.clicks - a.clicks);
+    stats.sort((a, b) => b.totalClicks - a.totalClicks);
 
     res.json({ stats });
   } catch (err) {

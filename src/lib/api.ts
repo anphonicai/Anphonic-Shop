@@ -45,10 +45,8 @@ export interface BrandSubmissionResponse {
 export interface BrandStat {
   brandId: string;
   website: string | null;
-  clicks: number;
-  conversions: number;
-  conversionRate: number;
-  revenue: number;
+  totalClicks: number;
+  monthlyClicks: number;
 }
 
 export interface StatsResponse {

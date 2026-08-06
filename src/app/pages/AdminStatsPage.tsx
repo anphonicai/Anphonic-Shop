@@ -100,10 +100,8 @@ export function AdminStatsPage() {
               <thead>
                 <tr className="text-left" style={{ backgroundColor: 'rgba(10,31,61,0.03)' }}>
                   <th className="px-4 py-3 font-medium" style={{ color: NAVY }}>Brand</th>
-                  <th className="px-4 py-3 font-medium text-right" style={{ color: NAVY }}>Clicks</th>
-                  <th className="px-4 py-3 font-medium text-right" style={{ color: NAVY }}>Conversions</th>
-                  <th className="px-4 py-3 font-medium text-right" style={{ color: NAVY }}>Conv. rate</th>
-                  <th className="px-4 py-3 font-medium text-right" style={{ color: NAVY }}>Revenue</th>
+                  <th className="px-4 py-3 font-medium text-right" style={{ color: NAVY }}>Total clicks</th>
+                  <th className="px-4 py-3 font-medium text-right" style={{ color: NAVY }}>Monthly clicks</th>
                 </tr>
               </thead>
               <tbody>
@@ -112,12 +110,8 @@ export function AdminStatsPage() {
                     <td className="px-4 py-3" style={{ color: NAVY }}>
                       {brandNames.get(row.brandId) ?? row.brandId}
                     </td>
-                    <td className="px-4 py-3 text-right">{row.clicks}</td>
-                    <td className="px-4 py-3 text-right">{row.conversions}</td>
-                    <td className="px-4 py-3 text-right">{(row.conversionRate * 100).toFixed(1)}%</td>
-                    <td className="px-4 py-3 text-right" style={{ color: TEAL }}>
-                      {row.revenue > 0 ? row.revenue.toLocaleString() : '—'}
-                    </td>
+                    <td className="px-4 py-3 text-right">{row.totalClicks}</td>
+                    <td className="px-4 py-3 text-right" style={{ color: TEAL }}>{row.monthlyClicks}</td>
                   </tr>
                 ))}
               </tbody>
