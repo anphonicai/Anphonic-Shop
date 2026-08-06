@@ -1,8 +1,33 @@
-import { Router, Request, Response } from 'express';
+import { Router, Request, Response, NextFunction } from 'express';
+import { timingSafeEqual } from 'crypto';
 import { prisma } from '../lib/prisma';
 import { brandRegistry } from '../lib/brandRegistry';
 
 const router = Router();
+
+// Guards /stats — compares the caller's key against ADMIN_KEY with a
+// timing-safe check so response time can't be used to brute-force the key
+// byte by byte.
+function requireAdminKey(req: Request, res: Response, next: NextFunction) {
+  const expected = process.env.ADMIN_KEY;
+  const provided = req.header('x-admin-key') ?? '';
+
+  if (!expected) {
+    res.status(500).json({ error: 'Admin stats are not configured' });
+    return;
+  }
+
+  const a = Buffer.from(provided);
+  const b = Buffer.from(expected);
+  const match = a.length === b.length && timingSafeEqual(a, b);
+
+  if (!match) {
+    res.status(401).json({ error: 'Unauthorized' });
+    return;
+  }
+
+  next();
+}
 
 // 1x1 transparent GIF — served in response to the conversion pixel so the
 // <img> tag never shows as broken, even though the script hides it anyway.
@@ -68,6 +93,45 @@ router.get('/conversion', async (req: Request, res: Response) => {
   // embedded cross-origin, so explicitly opt out.
   res.set('Cross-Origin-Resource-Policy', 'cross-origin');
   res.send(TRANSPARENT_GIF);
+});
+
+// GET /api/track/stats
+// Click and conversion counts per brand, for the internal stats page. Requires
+// the x-admin-key header — see requireAdminKey above.
+router.get('/stats', requireAdminKey, async (_req: Request, res: Response) => {
+  try {
+    const [clicks, conversions] = await Promise.all([
+      prisma.click.groupBy({ by: ['brandId'], _count: { _all: true } }),
+      prisma.conversion.groupBy({ by: ['brandId'], _count: { _all: true }, _sum: { orderTotal: true } }),
+    ]);
+
+    const clicksByBrand = new Map(clicks.map(c => [c.brandId, c._count._all]));
+    const conversionsByBrand = new Map(
+      conversions.map(c => [c.brandId, { count: c._count._all, revenue: c._sum.orderTotal?.toNumber() ?? 0 }])
+    );
+
+    const brandIds = new Set([...Object.keys(brandRegistry), ...clicksByBrand.keys(), ...conversionsByBrand.keys()]);
+
+    const stats = [...brandIds].map(brandId => {
+      const clickCount = clicksByBrand.get(brandId) ?? 0;
+      const conversion = conversionsByBrand.get(brandId) ?? { count: 0, revenue: 0 };
+      return {
+        brandId,
+        website: brandRegistry[brandId]?.website ?? null,
+        clicks: clickCount,
+        conversions: conversion.count,
+        conversionRate: clickCount > 0 ? conversion.count / clickCount : 0,
+        revenue: conversion.revenue,
+      };
+    });
+
+    stats.sort((a, b) => b.clicks - a.clicks);
+
+    res.json({ stats });
+  } catch (err) {
+    console.error('Stats fetch error:', err);
+    res.status(500).json({ error: 'Could not load stats' });
+  }
 });
 
 export default router;

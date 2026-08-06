@@ -42,6 +42,19 @@ export interface BrandSubmissionResponse {
   submission: { id: string; brandName: string };
 }
 
+export interface BrandStat {
+  brandId: string;
+  website: string | null;
+  clicks: number;
+  conversions: number;
+  conversionRate: number;
+  revenue: number;
+}
+
+export interface StatsResponse {
+  stats: BrandStat[];
+}
+
 export const trackClickUrl = (brandId: string) => `${BASE_URL}/api/track/click?bid=${brandId}`;
 
 export const api = {
@@ -55,6 +68,11 @@ export const api = {
     return request<BrandSubmissionResponse>('/api/brand-submissions', {
       method: 'POST',
       body: JSON.stringify(payload),
+    });
+  },
+  getStats(adminKey: string): Promise<StatsResponse> {
+    return request<StatsResponse>('/api/track/stats', {
+      headers: { 'x-admin-key': adminKey },
     });
   },
 };

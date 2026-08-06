@@ -11,6 +11,7 @@ import { PrivacyPage } from './app/pages/PrivacyPage';
 import { TermsPage } from './app/pages/TermsPage';
 import { BlogsPage } from './app/pages/BlogsPage';
 import { BlogPostPage } from './app/pages/BlogPostPage';
+import { AdminStatsPage } from './app/pages/AdminStatsPage';
 import { LEAD_SUBMITTED_KEY } from './lib/leadGate';
 import './styles/index.css';
 
@@ -51,6 +52,7 @@ const router = createBrowserRouter([
   { path: '/contact', element: <ContactPage /> },
   { path: '/privacy', element: <PrivacyPage /> },
   { path: '/terms', element: <TermsPage /> },
+  { path: '/admin/stats', element: <AdminStatsPage /> },
   { path: '*', element: <Navigate to="/" replace /> },
 ]);
 
