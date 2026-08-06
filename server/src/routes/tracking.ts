@@ -1,33 +1,9 @@
-import { Router, Request, Response, NextFunction } from 'express';
-import { timingSafeEqual } from 'crypto';
+import { Router, Request, Response } from 'express';
 import { prisma } from '../lib/prisma';
 import { brandRegistry } from '../lib/brandRegistry';
+import { requireAdminKey } from '../lib/adminAuth';
 
 const router = Router();
-
-// Guards /stats — compares the caller's key against ADMIN_KEY with a
-// timing-safe check so response time can't be used to brute-force the key
-// byte by byte.
-function requireAdminKey(req: Request, res: Response, next: NextFunction) {
-  const expected = process.env.ADMIN_KEY;
-  const provided = req.header('x-admin-key') ?? '';
-
-  if (!expected) {
-    res.status(500).json({ error: 'Admin stats are not configured' });
-    return;
-  }
-
-  const a = Buffer.from(provided);
-  const b = Buffer.from(expected);
-  const match = a.length === b.length && timingSafeEqual(a, b);
-
-  if (!match) {
-    res.status(401).json({ error: 'Unauthorized' });
-    return;
-  }
-
-  next();
-}
 
 // 1x1 transparent GIF — served in response to the conversion pixel so the
 // <img> tag never shows as broken, even though the script hides it anyway.

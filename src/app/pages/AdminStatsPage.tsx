@@ -14,6 +14,25 @@ export function AdminStatsPage() {
   const [stats, setStats] = useState<BrandStat[] | null>(null);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [exporting, setExporting] = useState(false);
+
+  const downloadLeads = async () => {
+    setExporting(true);
+    setError('');
+    try {
+      const blob = await api.exportLeadsCsv(adminKey);
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `leads-${new Date().toISOString().slice(0, 10)}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Could not export leads');
+    } finally {
+      setExporting(false);
+    }
+  };
 
   const load = (key: string) => {
     setLoading(true);
@@ -78,17 +97,27 @@ export function AdminStatsPage() {
       <div className="max-w-4xl mx-auto">
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-xl font-medium" style={{ color: NAVY }}>Click & conversion stats</h1>
-          <button
-            onClick={() => {
-              localStorage.removeItem(ADMIN_KEY_STORAGE);
-              setAdminKey('');
-              setStats(null);
-            }}
-            className="text-xs font-semibold uppercase tracking-wider"
-            style={{ color: 'rgba(10,31,61,0.4)' }}
-          >
-            Sign out
-          </button>
+          <div className="flex items-center gap-4">
+            <button
+              onClick={downloadLeads}
+              disabled={exporting}
+              className="text-xs font-semibold uppercase tracking-wider disabled:opacity-60"
+              style={{ color: TEAL }}
+            >
+              {exporting ? 'Exporting…' : 'Download leads (CSV)'}
+            </button>
+            <button
+              onClick={() => {
+                localStorage.removeItem(ADMIN_KEY_STORAGE);
+                setAdminKey('');
+                setStats(null);
+              }}
+              className="text-xs font-semibold uppercase tracking-wider"
+              style={{ color: 'rgba(10,31,61,0.4)' }}
+            >
+              Sign out
+            </button>
+          </div>
         </div>
 
         {loading && <p className="text-sm" style={{ color: 'rgba(10,31,61,0.5)' }}>Loading…</p>}

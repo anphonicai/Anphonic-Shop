@@ -73,4 +73,14 @@ export const api = {
       headers: { 'x-admin-key': adminKey },
     });
   },
+  async exportLeadsCsv(adminKey: string): Promise<Blob> {
+    const res = await fetch(`${BASE_URL}/api/leads/export`, {
+      headers: { 'x-admin-key': adminKey },
+    });
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}));
+      throw new Error(data.error ?? `Request failed: ${res.status}`);
+    }
+    return res.blob();
+  },
 };

@@ -1,8 +1,15 @@
 import { Router, Request, Response } from 'express';
 import { body, validationResult } from 'express-validator';
 import { prisma } from '../lib/prisma';
+import { requireAdminKey } from '../lib/adminAuth';
 
 const router = Router();
+
+const CSV_COLUMNS = ['name', 'email', 'phone', 'ageGroup', 'gender', 'city', 'country', 'categories', 'createdAt'] as const;
+
+// Wraps a value in quotes and escapes any quotes inside it, per RFC 4180 —
+// needed since names/cities can contain commas.
+const csvCell = (value: string) => `"${value.replace(/"/g, '""')}"`;
 
 const stripTags = (value: string) => value.replace(/<[^>]*>/g, '');
 
@@ -57,6 +64,40 @@ router.post('/', leadValidation, async (req: Request, res: Response) => {
   } catch (err) {
     console.error('Lead save error:', err);
     res.status(500).json({ error: 'Could not save your details. Please try again.' });
+  }
+});
+
+// GET /api/leads/export
+// Every lead who filled out the gate form, as a downloadable CSV. Requires
+// the x-admin-key header — see requireAdminKey.
+router.get('/export', requireAdminKey, async (_req: Request, res: Response) => {
+  try {
+    const leads = await prisma.lead.findMany({ orderBy: { createdAt: 'desc' } });
+
+    const header = CSV_COLUMNS.join(',');
+    const rows = leads.map(lead =>
+      [
+        lead.name,
+        lead.email,
+        lead.phone,
+        lead.ageGroup,
+        lead.gender,
+        lead.city,
+        lead.country,
+        lead.categories.join('; '),
+        lead.createdAt.toISOString(),
+      ]
+        .map(csvCell)
+        .join(',')
+    );
+    const csv = [header, ...rows].join('\r\n');
+
+    res.set('Content-Type', 'text/csv; charset=utf-8');
+    res.set('Content-Disposition', `attachment; filename="leads-${new Date().toISOString().slice(0, 10)}.csv"`);
+    res.send(csv);
+  } catch (err) {
+    console.error('Lead export error:', err);
+    res.status(500).json({ error: 'Could not export leads' });
   }
 });
 
