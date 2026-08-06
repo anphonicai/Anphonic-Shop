@@ -55,7 +55,7 @@ export const brands: Brand[] = [
     logo: '/brands/nabhi-sutra.png',
     image: '/brands/nabhi-sutra.png',
     verified: true,
-    website: 'https://nabhisutra.com/',
+    website: 'https://nabhisutra.com/pages/copper-stem-water-enhancer-a-gift-of-wellness',
   },
   {
     id: 'nipura',
@@ -67,7 +67,7 @@ export const brands: Brand[] = [
     logo: '/brands/nipura.png',
     image: '/brands/nipura.png',
     verified: true,
-    website: 'https://nipura.in/',
+    website: 'https://nipura.in/collections/b2g2sale',
   },
   {
     id: 'oregion',
@@ -79,7 +79,7 @@ export const brands: Brand[] = [
     logo: '/brands/oregion.png',
     image: '/brands/oregion.png',
     verified: true,
-    website: 'https://oregion.in/',
+    website: 'https://oregion.in/collections/bestseller-products',
   },
   {
     id: 'urban-platter',
@@ -103,7 +103,7 @@ export const brands: Brand[] = [
     logo: '/brands/dhampur-green.png',
     image: '/brands/dhampur-green.png',
     verified: true,
-    website: 'https://www.dhampurgreen.com/',
+    website: 'https://www.dhampurgreen.com/collections/mocktails-syrups?srsltid=AfmBOoqkIWQeJ3quo_tAt2zhQDYYWM8_5LtENhCJlLC4rIkN_HY31ksU',
   },
   {
     id: 'kekaa',
@@ -139,18 +139,18 @@ export const brands: Brand[] = [
     logo: '/brands/bubz.png',
     image: '/brands/bubz.png',
     verified: true,
-    website: 'https://drinkbubz.com/',
+    website: 'https://drinkbubz.com/products/bubz-singles-pack-multi-flavor',
   },
   {
     id: 'keos',
     name: 'Keos',
     category: 'Fashion',
     description: 'Keos is a modern Indian clothing brand creating everyday essentials with premium comfort, sharp design, and effortless personality.',
-    code: 'KEOSFLASH20',
+    code: 'HELLO20',
     discount: 'Use code at checkout — valid until 30th September 2026',
     logo: '/brands/keos.png',
     image: '/brands/keos.png',
     verified: true,
-    website: 'https://keos.life/',
+    website: 'https://keos.life/collections/new-arrivals',
   },
 ];

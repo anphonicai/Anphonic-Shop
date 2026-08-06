@@ -14,15 +14,15 @@ export const brandRegistry: Record<string, { code: string; website: string }> = 
   },
   'nabhi-sutra': {
     code: 'APS20',
-    website: 'https://nabhisutra.com/',
+    website: 'https://nabhisutra.com/pages/copper-stem-water-enhancer-a-gift-of-wellness',
   },
   nipura: {
     code: 'FIRSTSHOP10',
-    website: 'https://nipura.in/',
+    website: 'https://nipura.in/collections/b2g2sale',
   },
   oregion: {
     code: 'ORIGIN',
-    website: 'https://oregion.in/',
+    website: 'https://oregion.in/collections/bestseller-products',
   },
   'urban-platter': {
     code: 'ANPHONIC',
@@ -30,7 +30,7 @@ export const brandRegistry: Record<string, { code: string; website: string }> = 
   },
   'dhampur-green': {
     code: 'MS10',
-    website: 'https://www.dhampurgreen.com/',
+    website: 'https://www.dhampurgreen.com/collections/mocktails-syrups?srsltid=AfmBOoqkIWQeJ3quo_tAt2zhQDYYWM8_5LtENhCJlLC4rIkN_HY31ksU',
   },
   kekaa: {
     code: 'KEKAABOGO',
@@ -42,10 +42,10 @@ export const brandRegistry: Record<string, { code: string; website: string }> = 
   },
   bubz: {
     code: 'BUBZZIN10',
-    website: 'https://drinkbubz.com/',
+    website: 'https://drinkbubz.com/products/bubz-singles-pack-multi-flavor',
   },
   keos: {
-    code: 'KEOSFLASH20',
-    website: 'https://keos.life/',
+    code: 'HELLO20',
+    website: 'https://keos.life/collections/new-arrivals',
   },
 };
