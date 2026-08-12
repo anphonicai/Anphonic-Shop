@@ -5,7 +5,7 @@
 // can't be spoofed with an arbitrary code.
 export const brandRegistry: Record<string, { code: string; website: string }> = {
   caramelly: {
-    code: 'LATTE2K',
+    code: 'Anphonic2K',
     website: 'https://caramelly.in/products/caramelly-latte-touch-coffee-machine-with-precision-grinding-and-touchscreen',
   },
   'dhaaga-life': {
@@ -41,7 +41,7 @@ export const brandRegistry: Record<string, { code: string; website: string }> = 
     website: 'https://littlerituals.in/',
   },
   bubz: {
-    code: 'BUBZZIN10',
+    code: 'BUBZZIN15',
     website: 'https://drinkbubz.com/products/bubz-singles-pack-multi-flavor',
   },
   keos: {
