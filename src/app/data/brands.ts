@@ -1,3 +1,10 @@
+export interface BrandOffer {
+  id: string;
+  label: string;
+  code: string;
+  website: string;
+}
+
 export interface Brand {
   id: string;
   name: string;
@@ -10,6 +17,10 @@ export interface Brand {
   logoBg?: string;
   verified: boolean;
   website?: string;
+  // Present when a brand has more than one selectable coupon/offer — the
+  // visitor picks one before the reveal-code flow runs. Absent for the
+  // common case of a single code per brand.
+  offers?: BrandOffer[];
 }
 
 export const categories = [
@@ -166,5 +177,32 @@ export const brands: Brand[] = [
     logoBg: 'rgb(34, 100, 176)',
     verified: true,
     website: 'https://www.drinkrelow.com/',
+  },
+  {
+    id: 'elver',
+    name: 'Elver',
+    category: 'Accessories',
+    description: 'Elver makes wireless earbuds and audio accessories built around all-day comfort, active noise cancellation, and battery life that keeps pace with you.',
+    code: 'ANPN499',
+    discount: '2 exclusive offers available',
+    logo: '/brands/elver.png',
+    image: '/brands/elver.png',
+    logoBg: '#0a0a0a',
+    verified: true,
+    website: 'https://elver.in/',
+    offers: [
+      {
+        id: 'elver-499',
+        label: 'Elver Buds Nova AI ENC at ₹499',
+        code: 'ANPN499',
+        website: 'https://elver.in/products/elver-buds-nova-tws-earbuds-with-upto-40h-playback?utm_source=anphonic&utm_campaign=anp_aug_499',
+      },
+      {
+        id: 'elver-75',
+        label: 'Flat 75% off on Elver Audio products',
+        code: 'ANPEL75',
+        website: 'https://elver.in/pages/elver75?utm_source=anphonic&utm_campaign=anp_aug_75',
+      },
+    ],
   },
 ];

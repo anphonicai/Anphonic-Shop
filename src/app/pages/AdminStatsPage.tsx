@@ -6,7 +6,12 @@ const NAVY = '#0a1f3d';
 const TEAL = '#009689';
 const ADMIN_KEY_STORAGE = 'anphonic_admin_key';
 
-const brandNames = new Map(brands.map(b => [b.id, b.name]));
+// brand.id covers most rows; brands with multiple offers (see brands.ts
+// `offers`) are tracked under their own per-offer ids, so map those too.
+const brandNames = new Map([
+  ...brands.map(b => [b.id, b.name] as const),
+  ...brands.flatMap(b => (b.offers ?? []).map(o => [o.id, `${b.name} — ${o.label}`] as const)),
+]);
 
 export function AdminStatsPage() {
   const [adminKey, setAdminKey] = useState(() => localStorage.getItem(ADMIN_KEY_STORAGE) ?? '');

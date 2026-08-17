@@ -16,10 +16,93 @@ function RevealKey(id: string) {
   return `anphonic_revealed_${id}`;
 }
 
+interface ActiveOffer {
+  id: string;
+  label: string;
+  code: string;
+  website: string;
+}
+
 // ── Offer Reveal Card ──────────────────────────────────────────────────────────
 function OfferRevealCard({ brand }: { brand: typeof brands[0] }) {
+  const offers: ActiveOffer[] = brand.offers?.length
+    ? brand.offers
+    : [{ id: brand.id, label: brand.discount, code: brand.code, website: brand.website ?? '' }];
+  const hasChoice = offers.length > 1;
+
+  const [selectedId, setSelectedId] = useState<string | null>(hasChoice ? null : offers[0].id);
+
+  if (!selectedId) {
+    return <OfferPicker brand={brand} offers={offers} onSelect={setSelectedId} />;
+  }
+
+  const offer = offers.find(o => o.id === selectedId) ?? offers[0];
+  return (
+    <SingleOfferCard
+      brandName={brand.name}
+      offer={offer}
+      onChangeOffer={hasChoice ? () => setSelectedId(null) : undefined}
+    />
+  );
+}
+
+// ── Offer Picker (only shown for brands with more than one offer) ──────────────
+function OfferPicker({ brand, offers, onSelect }: { brand: typeof brands[0]; offers: ActiveOffer[]; onSelect: (id: string) => void }) {
+  return (
+    <div className="sticky top-24">
+      <div
+        className="rounded-2xl overflow-hidden"
+        style={{ border: `1.5px solid rgba(10,31,61,0.12)`, boxShadow: '0 8px 40px rgba(10,31,61,0.12)' }}
+      >
+        <div className="px-6 py-3 flex items-center justify-between" style={{ backgroundColor: TEAL }}>
+          <span className="text-[10px] uppercase tracking-[0.3em] font-semibold text-white">
+            {offers.length} Exclusive Offers
+          </span>
+          <div className="flex items-center gap-1.5">
+            <Shield className="size-3 text-white opacity-80" />
+            <span className="text-[9px] uppercase tracking-wider text-white opacity-80">Anphonic Verified</span>
+          </div>
+        </div>
+
+        <div className="bg-white p-6">
+          <h3 className="text-xl font-light mb-2 leading-snug" style={{ color: NAVY, fontFamily: "'Fraunces', serif" }}>
+            Choose your offer.
+          </h3>
+          <p className="text-sm mb-6" style={{ color: '#5a7a9a' }}>
+            {brand.name} has more than one code available — pick the one you want to reveal.
+          </p>
+
+          <div className="space-y-3">
+            {offers.map(offer => (
+              <button
+                key={offer.id}
+                onClick={() => onSelect(offer.id)}
+                className="w-full text-left p-4 rounded-xl transition-all duration-200"
+                style={{ border: '1.5px solid rgba(10,31,61,0.1)', backgroundColor: '#f8fbfb' }}
+                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = TEAL; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = 'rgba(10,31,61,0.1)'; }}
+              >
+                <p className="text-sm font-semibold" style={{ color: NAVY }}>{offer.label}</p>
+                <p className="text-xs mt-1 flex items-center gap-1.5" style={{ color: TEAL }}>
+                  <Lock className="size-3" /> Tap to unlock this code
+                </p>
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <p className="text-center text-xs mt-4" style={{ color: '#5a7a9a' }}>
+        Terms apply · Code verified by Anphonic
+      </p>
+    </div>
+  );
+}
+
+// ── Single-offer locked/revealed card ───────────────────────────────────────────
+function SingleOfferCard({ brandName, offer, onChangeOffer }: { brandName: string; offer: ActiveOffer; onChangeOffer?: () => void }) {
   const [revealed, setRevealed] = useState(
-    () => localStorage.getItem(RevealKey(brand.id)) === '1'
+    () => localStorage.getItem(RevealKey(offer.id)) === '1'
   );
   const [isRevealing, setIsRevealing] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -29,7 +112,7 @@ function OfferRevealCard({ brand }: { brand: typeof brands[0] }) {
     setIsRevealing(true);
     // Let animation play, then flip state
     setTimeout(() => {
-      localStorage.setItem(RevealKey(brand.id), '1');
+      localStorage.setItem(RevealKey(offer.id), '1');
       setRevealed(true);
       setIsRevealing(false);
     }, 650);
@@ -45,7 +128,7 @@ function OfferRevealCard({ brand }: { brand: typeof brands[0] }) {
   };
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(brand.code);
+    navigator.clipboard.writeText(offer.code);
     setCopied(true);
     setTimeout(() => setCopied(false), 2200);
   };
@@ -65,12 +148,21 @@ function OfferRevealCard({ brand }: { brand: typeof brands[0] }) {
           className="px-6 py-3 flex items-center justify-between"
           style={{ backgroundColor: TEAL }}
         >
-          <span className="text-[10px] uppercase tracking-[0.3em] font-semibold text-white">
-            Exclusive Offer
-          </span>
-          <div className="flex items-center gap-1.5">
-            <Shield className="size-3 text-white opacity-80" />
-            <span className="text-[9px] uppercase tracking-wider text-white opacity-80">
+          {onChangeOffer ? (
+            <button
+              onClick={onChangeOffer}
+              className="text-[10px] uppercase tracking-[0.3em] font-semibold text-white flex items-center gap-1.5 whitespace-nowrap shrink-0"
+            >
+              <ArrowLeft className="size-3 shrink-0" /> Change offer
+            </button>
+          ) : (
+            <span className="text-[10px] uppercase tracking-[0.3em] font-semibold text-white whitespace-nowrap">
+              Exclusive Offer
+            </span>
+          )}
+          <div className="flex items-center gap-1.5 shrink-0">
+            <Shield className="size-3 text-white opacity-80 shrink-0" />
+            <span className="text-[9px] uppercase tracking-wider text-white opacity-80 whitespace-nowrap">
               Anphonic Verified
             </span>
           </div>
@@ -112,7 +204,7 @@ function OfferRevealCard({ brand }: { brand: typeof brands[0] }) {
                     className="font-mono text-lg tracking-[0.4em] font-semibold select-none pointer-events-none"
                     style={{ color: NAVY, filter: 'blur(7px)', userSelect: 'none' }}
                   >
-                    {brand.code}
+                    {offer.code}
                   </span>
                   {/* Lock overlay */}
                   <div
@@ -200,10 +292,10 @@ function OfferRevealCard({ brand }: { brand: typeof brands[0] }) {
 
                 {/* Discount headline */}
                 <p className="text-2xl font-semibold mb-1" style={{ color: NAVY }}>
-                  {brand.discount}
+                  {offer.label}
                 </p>
                 <p className="text-sm mb-6" style={{ color: '#5a7a9a' }}>
-                  Apply at checkout on {brand.name}'s website.
+                  Apply at checkout on {brandName}'s website.
                 </p>
 
                 {/* Code box */}
@@ -219,7 +311,7 @@ function OfferRevealCard({ brand }: { brand: typeof brands[0] }) {
                       className="font-mono text-lg sm:text-xl tracking-[0.25em] sm:tracking-[0.35em] font-bold break-all"
                       style={{ color: NAVY }}
                     >
-                      {brand.code}
+                      {offer.code}
                     </span>
                   </div>
                   <button
@@ -244,7 +336,7 @@ function OfferRevealCard({ brand }: { brand: typeof brands[0] }) {
 
                 {/* Visit brand */}
                 <a
-                  href={brand.website ? trackClickUrl(brand.id) : '#'}
+                  href={offer.website ? trackClickUrl(offer.id) : '#'}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center justify-center gap-2 w-full py-3 rounded-xl text-xs font-semibold uppercase tracking-widest transition-all duration-200"
@@ -261,7 +353,7 @@ function OfferRevealCard({ brand }: { brand: typeof brands[0] }) {
                     (e.currentTarget as HTMLElement).style.color = NAVY;
                   }}
                 >
-                  Visit {brand.name} <ExternalLink className="size-3.5" />
+                  Visit {brandName} <ExternalLink className="size-3.5" />
                 </a>
               </motion.div>
             )}

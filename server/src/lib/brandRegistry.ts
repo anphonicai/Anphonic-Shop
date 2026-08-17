@@ -52,4 +52,20 @@ export const brandRegistry: Record<string, { code: string; website: string }> = 
     code: 'ANPHONIC1',
     website: 'https://www.drinkrelow.com/',
   },
+  // Elver has two selectable offers (see src/app/data/brands.ts `offers`) —
+  // each gets its own tracking key so clicks/conversions can be attributed
+  // to the right one. "elver" itself is only used by the generic "visit
+  // site" links on the brand page, not the offer-reveal flow.
+  elver: {
+    code: 'ANPN499',
+    website: 'https://elver.in/',
+  },
+  'elver-499': {
+    code: 'ANPN499',
+    website: 'https://elver.in/products/elver-buds-nova-tws-earbuds-with-upto-40h-playback?utm_source=anphonic&utm_campaign=anp_aug_499',
+  },
+  'elver-75': {
+    code: 'ANPEL75',
+    website: 'https://elver.in/pages/elver75?utm_source=anphonic&utm_campaign=anp_aug_75',
+  },
 };
