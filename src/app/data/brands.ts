@@ -153,4 +153,16 @@ export const brands: Brand[] = [
     verified: true,
     website: 'https://keos.life/collections/new-arrivals',
   },
+  {
+    id: 'relow',
+    name: 'Relow',
+    category: 'Food & Drinks',
+    description: 'Relow is sparkling probiotic soda with zero sugar, really low calories & no caffeine. Real fruit, made cleaner. A sip that skips the guilt trip.',
+    code: 'ANPHONIC1',
+    discount: '15% off sitewide',
+    logo: '/brands/relow.png',
+    image: '/brands/relow.png',
+    verified: true,
+    website: 'https://www.drinkrelow.com/',
+  },
 ];

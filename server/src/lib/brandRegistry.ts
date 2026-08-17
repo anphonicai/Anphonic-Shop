@@ -48,4 +48,8 @@ export const brandRegistry: Record<string, { code: string; website: string }> = 
     code: 'HELLO20',
     website: 'https://keos.life/collections/new-arrivals',
   },
+  relow: {
+    code: 'ANPHONIC1',
+    website: 'https://www.drinkrelow.com/',
+  },
 };
