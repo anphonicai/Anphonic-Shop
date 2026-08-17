@@ -170,7 +170,7 @@ export const brands: Brand[] = [
     name: 'Relow',
     category: 'Food & Drinks',
     description: 'Relow is sparkling probiotic soda with zero sugar, really low calories & no caffeine. Real fruit, made cleaner. A sip that skips the guilt trip.',
-    code: 'ANPHONIC1',
+    code: '3W31D',
     discount: '15% off sitewide',
     logo: '/brands/relow.png',
     image: '/brands/relow.png',

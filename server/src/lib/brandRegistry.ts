@@ -49,7 +49,7 @@ export const brandRegistry: Record<string, { code: string; website: string }> = 
     website: 'https://keos.life/collections/new-arrivals',
   },
   relow: {
-    code: 'ANPHONIC1',
+    code: '3W31D',
     website: 'https://www.drinkrelow.com/',
   },
   // Elver has two selectable offers (see src/app/data/brands.ts `offers`) —
