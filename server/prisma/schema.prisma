@@ -11,18 +11,19 @@ datasource db {
 model Lead {
   id         String   @id @default(cuid())
   name       String
-  email      String   @unique
+  email      String?
   phone      String
   ageGroup   String
-  gender     String
-  city       String
-  country    String
-  categories String[]
+  gender     String?
+  city       String?
+  country    String?
+  categories String[] @default([])
   consent    Boolean  @default(false)
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
   @@index([email])
+  @@index([phone])
 }
 
 model BrandSubmission {

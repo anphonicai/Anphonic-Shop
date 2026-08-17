@@ -1,7 +1,7 @@
 // Runs after `vite build`. Generates dist/sitemap.xml and static crawler-only
-// snapshots of the gated SPA routes under dist/_prerendered/**, so nginx can
-// serve real content to search/social bots without touching the client-side
-// lead-gate that real visitors go through. See deploy/README.md.
+// snapshots of the SPA routes under dist/_prerendered/**, so nginx can serve
+// real content to search/social bots instead of the client-rendered shell.
+// See deploy/README.md.
 import { build as esbuildBuild } from 'esbuild';
 import { chromium } from 'playwright';
 import { spawn } from 'node:child_process';
@@ -88,7 +88,6 @@ async function main() {
 
   const { brands } = await compileToModule('src/app/data/brands.ts', 'brands.mjs');
   const { blogPosts } = await compileToModule('src/app/data/blogs.ts', 'blogs.mjs');
-  const { LEAD_SUBMITTED_KEY } = await compileToModule('src/lib/leadGate.ts', 'leadGate.mjs');
 
   await writeSitemap(brands.map(b => b.id), blogPosts.map(p => p.slug));
 
@@ -107,10 +106,6 @@ async function main() {
 
     const browser = await chromium.launch();
     const context = await browser.newContext();
-    await context.addInitScript(
-      ([key]) => window.localStorage.setItem(key, '1'),
-      [LEAD_SUBMITTED_KEY]
-    );
 
     const snapshot = async (route, { brand, post } = {}) => {
       const page = await context.newPage();

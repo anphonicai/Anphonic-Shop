@@ -1,6 +1,5 @@
 import { createRoot } from 'react-dom/client';
 import { createBrowserRouter, RouterProvider, Navigate } from 'react-router';
-import { LoginPage } from './app/pages/LoginPage';
 import { BrandsPage } from './app/pages/BrandsPage';
 import { BrandPage } from './app/pages/BrandPage';
 import { AboutPage } from './app/pages/AboutPage';
@@ -12,37 +11,13 @@ import { TermsPage } from './app/pages/TermsPage';
 import { BlogsPage } from './app/pages/BlogsPage';
 import { BlogPostPage } from './app/pages/BlogPostPage';
 import { AdminStatsPage } from './app/pages/AdminStatsPage';
-import { LEAD_SUBMITTED_KEY } from './lib/leadGate';
+import { trackPageview } from './lib/analytics';
 import './styles/index.css';
 
-function RequireLead({ children }: { children: React.ReactNode }) {
-  if (localStorage.getItem(LEAD_SUBMITTED_KEY) !== '1') {
-    return <Navigate to="/" replace />;
-  }
-  return <>{children}</>;
-}
-
 const router = createBrowserRouter([
-  {
-    path: '/',
-    element: <LoginPage />,
-  },
-  {
-    path: '/brands',
-    element: (
-      <RequireLead>
-        <BrandsPage />
-      </RequireLead>
-    ),
-  },
-  {
-    path: '/brand/:id',
-    element: (
-      <RequireLead>
-        <BrandPage />
-      </RequireLead>
-    ),
-  },
+  { path: '/', element: <Navigate to="/brands" replace /> },
+  { path: '/brands', element: <BrandsPage /> },
+  { path: '/brand/:id', element: <BrandPage /> },
   { path: '/offers', element: <Navigate to="/brands" replace /> },
   { path: '/blogs', element: <BlogsPage /> },
   { path: '/blogs/:slug', element: <BlogPostPage /> },
@@ -55,6 +30,19 @@ const router = createBrowserRouter([
   { path: '/admin/stats', element: <AdminStatsPage /> },
   { path: '*', element: <Navigate to="/" replace /> },
 ]);
+
+// GA4 pageviews are sent manually (send_page_view: false in index.html)
+// since react-router's client-side navigation never triggers a real page load.
+let lastTrackedPath: string | null = null;
+const trackCurrentRoute = () => {
+  const { pathname, search } = router.state.location;
+  const path = pathname + search;
+  if (path === lastTrackedPath) return;
+  lastTrackedPath = path;
+  trackPageview(path);
+};
+router.subscribe(trackCurrentRoute);
+trackCurrentRoute();
 
 createRoot(document.getElementById('root')!).render(
   <RouterProvider router={router} />

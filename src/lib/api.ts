@@ -13,18 +13,12 @@ async function request<T>(path: string, options?: RequestInit): Promise<T> {
 
 export interface LeadPayload {
   name: string;
-  email: string;
   phone: string;
   ageGroup: string;
-  gender: string;
-  city: string;
-  country: string;
-  categories: string[];
-  consent: boolean;
 }
 
 export interface LeadResponse {
-  lead: { id: string; name: string; email: string; categories: string[] };
+  lead: { id: string; name: string; phone: string };
 }
 
 export interface BrandSubmissionPayload {

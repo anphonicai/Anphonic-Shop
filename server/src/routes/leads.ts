@@ -15,18 +15,13 @@ const stripTags = (value: string) => value.replace(/<[^>]*>/g, '');
 
 const leadValidation = [
   body('name').trim().customSanitizer(stripTags).notEmpty().withMessage('Name is required').isLength({ max: 100 }),
-  body('email').trim().isEmail().withMessage('Valid email is required').normalizeEmail(),
   body('phone').trim().notEmpty().withMessage('Phone is required').isLength({ max: 20 }),
   body('ageGroup').trim().notEmpty().withMessage('Age group is required'),
-  body('gender').trim().notEmpty().withMessage('Gender is required'),
-  body('city').trim().customSanitizer(stripTags).notEmpty().withMessage('City is required').isLength({ max: 100 }),
-  body('country').trim().notEmpty().withMessage('Country is required'),
-  body('categories').isArray({ min: 1 }).withMessage('Select at least one category'),
-  body('consent').custom(value => value === true).withMessage('Consent is required to continue'),
 ];
 
 // POST /api/leads
-// Stores (or updates) a lead's details — no login/session involved.
+// Stores (or updates) a lead's details — no login/session involved. Dedupes
+// by phone since that's the only stable identifier we collect now.
 router.post('/', leadValidation, async (req: Request, res: Response) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -34,32 +29,16 @@ router.post('/', leadValidation, async (req: Request, res: Response) => {
     return;
   }
 
-  const { name, email, phone, ageGroup, gender, city, country, categories, consent } = req.body as {
-    name: string;
-    email: string;
-    phone: string;
-    ageGroup: string;
-    gender: string;
-    city: string;
-    country: string;
-    categories: string[];
-    consent: boolean;
-  };
+  const { name, phone, ageGroup } = req.body as { name: string; phone: string; ageGroup: string };
 
   try {
-    const lead = await prisma.lead.upsert({
-      where: { email },
-      create: { name, email, phone, ageGroup, gender, city, country, categories, consent },
-      update: { name, phone, ageGroup, gender, city, country, categories, consent },
-    });
+    const existing = await prisma.lead.findFirst({ where: { phone } });
+    const lead = existing
+      ? await prisma.lead.update({ where: { id: existing.id }, data: { name, ageGroup } })
+      : await prisma.lead.create({ data: { name, phone, ageGroup } });
 
     res.status(200).json({
-      lead: {
-        id: lead.id,
-        name: lead.name,
-        email: lead.email,
-        categories: lead.categories,
-      },
+      lead: { id: lead.id, name: lead.name, phone: lead.phone },
     });
   } catch (err) {
     console.error('Lead save error:', err);
@@ -78,12 +57,12 @@ router.get('/export', requireAdminKey, async (_req: Request, res: Response) => {
     const rows = leads.map(lead =>
       [
         lead.name,
-        lead.email,
+        lead.email ?? '',
         lead.phone,
         lead.ageGroup,
-        lead.gender,
-        lead.city,
-        lead.country,
+        lead.gender ?? '',
+        lead.city ?? '',
+        lead.country ?? '',
         lead.categories.join('; '),
         lead.createdAt.toISOString(),
       ]

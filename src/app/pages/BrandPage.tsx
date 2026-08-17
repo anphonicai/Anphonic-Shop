@@ -5,7 +5,9 @@ import { ArrowLeft, Copy, Check, ExternalLink, Lock, Sparkles, CheckCircle2, Shi
 import { brands } from '../data/brands';
 import { AppNavbar } from '../components/AppNavbar';
 import { ImageWithFallback } from '../components/figma/ImageWithFallback';
+import { RevealCodeGate } from '../components/RevealCodeGate';
 import { trackClickUrl } from '../../lib/api';
+import { LEAD_SUBMITTED_KEY } from '../../lib/leadGate';
 
 const NAVY = '#0a1f3d';
 const TEAL = '#009689';
@@ -21,9 +23,9 @@ function OfferRevealCard({ brand }: { brand: typeof brands[0] }) {
   );
   const [isRevealing, setIsRevealing] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [showGate, setShowGate] = useState(false);
 
-  const handleReveal = () => {
-    if (isRevealing || revealed) return;
+  const playReveal = () => {
     setIsRevealing(true);
     // Let animation play, then flip state
     setTimeout(() => {
@@ -31,6 +33,15 @@ function OfferRevealCard({ brand }: { brand: typeof brands[0] }) {
       setRevealed(true);
       setIsRevealing(false);
     }, 650);
+  };
+
+  const handleReveal = () => {
+    if (isRevealing || revealed) return;
+    if (localStorage.getItem(LEAD_SUBMITTED_KEY) !== '1') {
+      setShowGate(true);
+      return;
+    }
+    playReveal();
   };
 
   const handleCopy = () => {
@@ -262,6 +273,15 @@ function OfferRevealCard({ brand }: { brand: typeof brands[0] }) {
       <p className="text-center text-xs mt-4" style={{ color: '#5a7a9a' }}>
         Terms apply · Code verified by Anphonic
       </p>
+
+      <AnimatePresence>
+        {showGate && (
+          <RevealCodeGate
+            onClose={() => setShowGate(false)}
+            onSuccess={() => { setShowGate(false); playReveal(); }}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }

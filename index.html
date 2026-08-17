@@ -34,7 +34,10 @@
         function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date());
 
-        gtag('config', 'G-QSX4BM43T8');
+        // send_page_view disabled here — this is a client-routed SPA, so
+        // pageviews are fired manually per route change (see src/lib/analytics.ts)
+        // instead of once for whatever URL happened to load the HTML shell.
+        gtag('config', 'G-QSX4BM43T8', { send_page_view: false });
       </script>
       <script type="text/javascript">
         (function(c,l,a,r,i,t,y){
