@@ -362,7 +362,7 @@ export function BrandPage() {
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ duration: 0.6 }}
                   className="w-20 h-20 rounded-2xl overflow-hidden flex items-center justify-center shrink-0 p-3"
-                  style={{ backgroundColor: '#ffffff', border: '1px solid rgba(255,255,255,0.15)' }}
+                  style={{ backgroundColor: brand.logoBg ?? '#ffffff', border: '1px solid rgba(255,255,255,0.15)' }}
                 >
                   <img
                     src={brand.logo}

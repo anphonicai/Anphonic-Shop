@@ -7,6 +7,7 @@ export interface Brand {
   discount: string;
   image: string;
   logo?: string;
+  logoBg?: string;
   verified: boolean;
   website?: string;
 }
@@ -162,6 +163,7 @@ export const brands: Brand[] = [
     discount: '15% off sitewide',
     logo: '/brands/relow.png',
     image: '/brands/relow.png',
+    logoBg: 'rgb(34, 100, 176)',
     verified: true,
     website: 'https://www.drinkrelow.com/',
   },

@@ -38,7 +38,7 @@ function BrandCard({ brand, index }: { brand: typeof brands[0]; index: number })
         {/* Image / logo area */}
         <div
           className="relative overflow-hidden"
-          style={{ height: 180, backgroundColor: brand.logo ? '#f4f6f8' : '#edf0f5' }}
+          style={{ height: 180, backgroundColor: brand.logo ? (brand.logoBg ?? '#f4f6f8') : '#edf0f5' }}
         >
           {brand.logo ? (
             <div className="size-full flex items-center justify-center p-10">
