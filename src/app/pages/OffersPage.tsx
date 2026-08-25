@@ -5,6 +5,7 @@ import { CheckCircle2, Copy, Check, Tag, ArrowLeft } from 'lucide-react';
 import { brands } from '../data/brands';
 import { Navbar } from '../components/Navbar';
 import { ImageWithFallback } from '../components/figma/ImageWithFallback';
+import { getStaticPeopleUsedToday } from '../utils/brandUsage';
 
 const NAVY = '#0a1f3d';
 const TEAL = '#009689';
@@ -18,6 +19,8 @@ interface OffersData {
 function OfferCard({ brand, index }: { brand: typeof brands[0]; index: number }) {
   const [copied, setCopied] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
+  const brandKey = brand.id?.toString() || brand.name || 'default-brand';
+  const peopleUsedToday = getStaticPeopleUsedToday(brandKey);
 
   useEffect(() => {
     if (!cardRef.current) return;
@@ -88,13 +91,18 @@ function OfferCard({ brand, index }: { brand: typeof brands[0]; index: number })
           className="rounded-lg p-3 mb-3"
           style={{ backgroundColor: `${TEAL}0f`, border: `1px dashed ${TEAL}55` }}
         >
-          <div className="flex items-center gap-1.5 mb-2">
-            <Tag className="size-3" style={{ color: TEAL }} />
-            <span
-              className="text-[10px] uppercase tracking-wider font-medium"
-              style={{ color: TEAL }}
-            >
-              Exclusive offer
+          <div className="flex items-center justify-between gap-2 mb-2">
+            <div className="flex items-center gap-1.5">
+              <Tag className="size-3" style={{ color: TEAL }} />
+              <span
+                className="text-[10px] uppercase tracking-wider font-medium"
+                style={{ color: TEAL }}
+              >
+                Exclusive offer
+              </span>
+            </div>
+            <span className="text-[9px] uppercase tracking-wider font-semibold px-2 py-0.5 rounded-full whitespace-nowrap" style={{ backgroundColor: `${TEAL}15`, color: TEAL }}>
+              {peopleUsedToday} Used Today
             </span>
           </div>
           <p className="text-sm font-medium" style={{ color: NAVY }}>

@@ -3,6 +3,7 @@ import gsap from 'gsap';
 import { X, Copy, Check, ExternalLink } from 'lucide-react';
 import { ImageWithFallback } from './figma/ImageWithFallback';
 import type { Brand } from '../data/brands';
+import { getStaticPeopleUsedToday } from '../utils/brandUsage';
 
 const NAVY = '#0a1f3d';
 const TEAL = '#009689';
@@ -16,6 +17,8 @@ export function BrandModal({ brand, onClose }: BrandModalProps) {
   const [copied, setCopied] = useState(false);
   const backdropRef = useRef<HTMLDivElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
+  const brandKey = brand?.id?.toString() || brand?.name || 'default-brand';
+  const peopleUsedToday = getStaticPeopleUsedToday(brandKey);
 
   useEffect(() => {
     document.body.style.overflow = brand ? 'hidden' : '';
@@ -145,6 +148,11 @@ export function BrandModal({ brand, onClose }: BrandModalProps) {
                 <p className="text-lg font-medium mb-5" style={{ color: NAVY }}>
                   {brand.discount}
                 </p>
+                <div className="mb-5">
+                  <span className="inline-flex text-[10px] uppercase tracking-wider font-semibold px-2.5 py-1 rounded-full" style={{ backgroundColor: `${TEAL}15`, color: TEAL }}>
+                    {peopleUsedToday} People Used Today
+                  </span>
+                </div>
 
                 {/* Code row */}
                 <div className="flex items-center gap-3">

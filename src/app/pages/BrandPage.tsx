@@ -8,6 +8,7 @@ import { ImageWithFallback } from '../components/figma/ImageWithFallback';
 import { RevealCodeGate } from '../components/RevealCodeGate';
 import { trackClickUrl } from '../../lib/api';
 import { LEAD_SUBMITTED_KEY } from '../../lib/leadGate';
+import { getStaticPeopleUsedToday } from '../utils/brandUsage';
 
 const NAVY = '#0a1f3d';
 const TEAL = '#009689';
@@ -29,11 +30,13 @@ function OfferRevealCard({ brand }: { brand: typeof brands[0] }) {
     ? brand.offers
     : [{ id: brand.id, label: brand.discount, code: brand.code, website: brand.website ?? '' }];
   const hasChoice = offers.length > 1;
+  const brandKey = brand.id?.toString() || brand.name || 'default-brand';
+  const peopleUsedToday = getStaticPeopleUsedToday(brandKey);
 
   const [selectedId, setSelectedId] = useState<string | null>(hasChoice ? null : offers[0].id);
 
   if (!selectedId) {
-    return <OfferPicker brand={brand} offers={offers} onSelect={setSelectedId} />;
+    return <OfferPicker brand={brand} offers={offers} peopleUsedToday={peopleUsedToday} onSelect={setSelectedId} />;
   }
 
   const offer = offers.find(o => o.id === selectedId) ?? offers[0];
@@ -41,13 +44,14 @@ function OfferRevealCard({ brand }: { brand: typeof brands[0] }) {
     <SingleOfferCard
       brandName={brand.name}
       offer={offer}
+      peopleUsedToday={peopleUsedToday}
       onChangeOffer={hasChoice ? () => setSelectedId(null) : undefined}
     />
   );
 }
 
 // ── Offer Picker (only shown for brands with more than one offer) ──────────────
-function OfferPicker({ brand, offers, onSelect }: { brand: typeof brands[0]; offers: ActiveOffer[]; onSelect: (id: string) => void }) {
+function OfferPicker({ brand, offers, peopleUsedToday, onSelect }: { brand: typeof brands[0]; offers: ActiveOffer[]; peopleUsedToday: number; onSelect: (id: string) => void }) {
   return (
     <div className="sticky top-24">
       <div
@@ -59,8 +63,10 @@ function OfferPicker({ brand, offers, onSelect }: { brand: typeof brands[0]; off
             {offers.length} Exclusive Offers
           </span>
           <div className="flex items-center gap-1.5">
-            <Shield className="size-3 text-white opacity-80" />
-            <span className="text-[9px] uppercase tracking-wider text-white opacity-80">Anphonic Verified</span>
+            <Shield className="size-3" style={{ color: '#000' }} />
+            <span className="text-[9px] uppercase tracking-wider font-semibold whitespace-nowrap" style={{ color: '#000' }}>
+              {peopleUsedToday} People Used Today
+            </span>
           </div>
         </div>
 
@@ -100,7 +106,7 @@ function OfferPicker({ brand, offers, onSelect }: { brand: typeof brands[0]; off
 }
 
 // ── Single-offer locked/revealed card ───────────────────────────────────────────
-function SingleOfferCard({ brandName, offer, onChangeOffer }: { brandName: string; offer: ActiveOffer; onChangeOffer?: () => void }) {
+function SingleOfferCard({ brandName, offer, peopleUsedToday, onChangeOffer }: { brandName: string; offer: ActiveOffer; peopleUsedToday: number; onChangeOffer?: () => void }) {
   const [revealed, setRevealed] = useState(
     () => localStorage.getItem(RevealKey(offer.id)) === '1'
   );
@@ -161,9 +167,9 @@ function SingleOfferCard({ brandName, offer, onChangeOffer }: { brandName: strin
             </span>
           )}
           <div className="flex items-center gap-1.5 shrink-0">
-            <Shield className="size-3 text-white opacity-80 shrink-0" />
-            <span className="text-[9px] uppercase tracking-wider text-white opacity-80 whitespace-nowrap">
-              Anphonic Verified
+            <Shield className="size-3 shrink-0" style={{ color: '#000' }} />
+            <span className="text-[9px] uppercase tracking-wider font-semibold whitespace-nowrap" style={{ color: '#000' }}>
+              {peopleUsedToday} People Used Today
             </span>
           </div>
         </div>

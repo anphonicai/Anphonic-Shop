@@ -7,12 +7,16 @@ import { AppNavbar } from '../components/AppNavbar';
 import { ImageWithFallback } from '../components/figma/ImageWithFallback';
 import { TapedFooter } from '../components/ui/footer-taped-design';
 import { Marquee } from '../components/Marquee';
+import { getStaticPeopleUsedToday } from '../utils/brandUsage';
 
 const NAVY = '#0a1f3d';
 const TEAL = '#009689';
 const USER_KEY = 'anphonic_user';
 
 function BrandCard({ brand, index }: { brand: typeof brands[0]; index: number }) {
+  const brandKey = brand.id?.toString() || brand.name || 'default-brand';
+  const peopleUsedToday = getStaticPeopleUsedToday(brandKey);
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 24 }}
@@ -99,10 +103,10 @@ function BrandCard({ brand, index }: { brand: typeof brands[0]; index: number })
           >
             <span className="text-xs font-medium" style={{ color: TEAL }}>Exclusive offer available</span>
             <span
-              className="text-[10px] uppercase tracking-wider font-semibold px-2.5 py-1 rounded-full"
+              className="text-[10px] uppercase tracking-wider font-semibold px-2.5 py-1 rounded-full whitespace-nowrap"
               style={{ backgroundColor: `${TEAL}15`, color: TEAL }}
             >
-              Locked
+              {peopleUsedToday} People Used Today
             </span>
           </div>
 

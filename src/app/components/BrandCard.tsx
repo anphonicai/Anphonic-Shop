@@ -3,6 +3,7 @@ import gsap from 'gsap';
 import { Lock } from 'lucide-react';
 import { ImageWithFallback } from './figma/ImageWithFallback';
 import type { Brand } from '../data/brands';
+import { getStaticPeopleUsedToday } from '../utils/brandUsage';
 
 const NAVY = '#0a1f3d';
 const TEAL = '#009689';
@@ -16,6 +17,8 @@ interface BrandCardProps {
 export function BrandCard({ brand }: BrandCardProps) {
   const cardRef = useRef<HTMLDivElement>(null);
   const imgRef = useRef<HTMLDivElement>(null);
+  const brandKey = brand.id?.toString() || brand.name || 'default-brand';
+  const peopleUsedToday = getStaticPeopleUsedToday(brandKey);
 
   const handleEnter = () => {
     if (!cardRef.current) return;
@@ -104,6 +107,12 @@ export function BrandCard({ brand }: BrandCardProps) {
         <p className="text-sm leading-relaxed mb-4 line-clamp-2" style={{ color: '#5a7a9a' }}>
           {brand.description}
         </p>
+
+        <div className="mb-4">
+          <span className="inline-flex text-[10px] uppercase tracking-wider font-semibold px-2.5 py-1 rounded-full whitespace-nowrap" style={{ backgroundColor: `${TEAL}15`, color: TEAL }}>
+            {peopleUsedToday} People Used Today
+          </span>
+        </div>
 
         <div
           className="flex items-center justify-between pt-4 border-t"
