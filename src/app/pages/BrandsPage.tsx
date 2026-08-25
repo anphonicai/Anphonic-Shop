@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router';
 import { motion } from 'motion/react';
-import { CheckCircle2, ArrowRight } from 'lucide-react';
+import { CheckCircle2, ArrowRight, User } from 'lucide-react';
 import { brands, categories as ALL_CATS } from '../data/brands';
 import { AppNavbar } from '../components/AppNavbar';
 import { ImageWithFallback } from '../components/figma/ImageWithFallback';
@@ -96,20 +96,6 @@ function BrandCard({ brand, index }: { brand: typeof brands[0]; index: number })
             {brand.description}
           </p>
 
-          {/* Offer teaser (no code shown) */}
-          <div
-            className="flex items-center justify-between p-3 rounded-xl mb-4"
-            style={{ backgroundColor: `${TEAL}0a`, border: `1px dashed ${TEAL}40` }}
-          >
-            <span className="text-xs font-medium" style={{ color: TEAL }}>Exclusive offer available</span>
-            <span
-              className="text-[10px] uppercase tracking-wider font-semibold px-2.5 py-1 rounded-full whitespace-nowrap"
-              style={{ backgroundColor: `${TEAL}15`, color: TEAL }}
-            >
-              {peopleUsedToday} People Used Today
-            </span>
-          </div>
-
           {/* CTA */}
           <div
             className="flex items-center justify-between text-xs font-semibold uppercase tracking-widest transition-colors duration-200"
@@ -120,6 +106,14 @@ function BrandCard({ brand, index }: { brand: typeof brands[0]; index: number })
               className="size-4 transition-transform duration-200 group-hover:translate-x-1"
               style={{ color: TEAL }}
             />
+          </div>
+
+          {/* Social proof */}
+          <div className="flex items-center gap-1.5 mt-3 pt-3 border-t" style={{ borderColor: 'rgba(10,31,61,0.07)' }}>
+            <User className="size-3.5" style={{ color: TEAL }} />
+            <span className="text-[11px] tabular-nums" style={{ color: '#5a7a9a' }}>
+              <span className="font-semibold" style={{ color: NAVY }}>{peopleUsedToday}</span> people used today
+            </span>
           </div>
         </div>
       </Link>
