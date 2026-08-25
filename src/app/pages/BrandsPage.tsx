@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router';
 import { motion } from 'motion/react';
 import { CheckCircle2, ArrowRight } from 'lucide-react';
@@ -137,15 +137,6 @@ export function BrandsPage() {
       return 'All';
     }
   });
-  const [firstName, setFirstName] = useState('');
-
-  useEffect(() => {
-    try {
-      const raw = localStorage.getItem(USER_KEY);
-      if (raw) setFirstName(JSON.parse(raw).name?.split(' ')[0] ?? '');
-    } catch { /* ignore */ }
-  }, []);
-
   const filtered = activeCategory === 'All'
     ? brands
     : brands.filter(b => b.category === activeCategory);
@@ -155,66 +146,6 @@ export function BrandsPage() {
       <AppNavbar />
 
       <main className="pt-16">
-        {/* ── Page header ── */}
-        <div
-          className="relative overflow-hidden"
-          style={{ backgroundColor: '#fff', borderBottom: '1px solid rgba(10,31,61,0.07)' }}
-        >
-          {/* Subtle dot grid */}
-          <div
-            className="absolute inset-0 pointer-events-none"
-            style={{
-              backgroundImage: `radial-gradient(circle, rgba(10,31,61,0.06) 1px, transparent 1px)`,
-              backgroundSize: '28px 28px',
-            }}
-          />
-          <div className="relative max-w-7xl mx-auto px-6 md:px-10 py-14 md:py-20">
-            <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-            >
-              <p className="text-[10px] uppercase tracking-[0.35em] font-semibold mb-4" style={{ color: TEAL }}>
-                The Anphonic Index
-              </p>
-              <h1
-                className="text-4xl md:text-6xl font-light leading-tight mb-4"
-                style={{ color: NAVY, fontFamily: "'Fraunces', serif" }}
-              >
-                {firstName ? (
-                  <>Welcome back, <em style={{ color: TEAL }}>{firstName}.</em></>
-                ) : (
-                  <>Every brand <em style={{ color: TEAL }}>worth knowing.</em></>
-                )}
-              </h1>
-              <p className="text-base max-w-lg" style={{ color: '#5a7a9a' }}>
-                Hand-picked D2C brands with exclusive codes reserved for Anphonic members.
-                Click any brand to reveal your offer.
-              </p>
-            </motion.div>
-
-            {/* Stats row */}
-            <motion.div
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="flex items-center gap-8 mt-10 pt-8 border-t"
-              style={{ borderColor: 'rgba(10,31,61,0.07)' }}
-            >
-              {[
-                { value: brands.length, label: 'Partner Brands' },
-                { value: ALL_CATS.length - 1, label: 'Categories' },
-                { value: '100%', label: 'Verified Codes' },
-              ].map(({ value, label }) => (
-                <div key={label} className="text-center">
-                  <div className="text-3xl font-light tabular-nums mb-0.5" style={{ color: NAVY }}>{value}</div>
-                  <div className="text-[10px] uppercase tracking-[0.2em]" style={{ color: '#5a7a9a' }}>{label}</div>
-                </div>
-              ))}
-            </motion.div>
-          </div>
-        </div>
-
         {/* ── Marquee ── */}
         <Marquee />
 
