@@ -81,13 +81,16 @@ function BrandCard({ brand, index }: { brand: typeof brands[0]; index: number })
           )}
         </div>
 
-        {/* Content */}
+        {/* Content — lead with the offer to hook consideration; brand name lives on the detail page */}
         <div className="p-5">
+          <p className="text-[10px] uppercase tracking-[0.2em] font-semibold mb-1.5" style={{ color: TEAL }}>
+            Exclusive offer
+          </p>
           <h3
-            className="text-base font-semibold mb-1.5 leading-tight"
-            style={{ color: NAVY }}
+            className="text-base font-semibold mb-1.5 leading-snug"
+            style={{ color: NAVY, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}
           >
-            {brand.name}
+            {brand.discount}
           </h3>
           <p
             className="text-xs leading-relaxed mb-5"
